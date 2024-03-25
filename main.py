@@ -22,9 +22,9 @@ async def bot_working():
     dp.include_routers(admin_, user_, dbt)
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.set_my_commands(commands)
-    scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_message1, trigger=bot_adv_trigger)
-    scheduler.start()
+    # scheduler = AsyncIOScheduler()
+    # scheduler.add_job(send_message1, trigger=bot_adv_trigger)
+    # scheduler.start()
     try:
         print('bot start')
         await dp.start_polling(bot)
