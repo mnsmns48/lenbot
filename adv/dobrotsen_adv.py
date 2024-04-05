@@ -37,7 +37,7 @@ async def main_kb() -> ReplyKeyboardBuilder:
 
 async def dobrotsen_adv(c: CallbackQuery):
     m_kb = await main_kb()
-    await c.answer('Запуск')
+    await c.answer('Запуск меню')
     await c.message.answer('Главное меню:', reply_markup=m_kb.as_markup())
 
 

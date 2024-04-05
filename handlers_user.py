@@ -1,7 +1,7 @@
 import asyncio
 
 from aiogram import Router, F
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
@@ -116,6 +116,11 @@ async def show_phone(c: CallbackQuery, state=FSMContext):
     await state.set_state(ListenUser.search_phone)
 
 
+async def show_phone_m(m: Message, state=FSMContext):
+    await m.answer('Введите номер телефона 10 цифр: +7.......начиная с 9-ки\nОжидаю.....')
+    await state.set_state(ListenUser.search_phone)
+
+
 async def take_phone_numb(m: Message, state=FSMContext):
     r = await get_info_by_phone(m)
     await m.answer(r, parse_mode='HTML', disable_web_page_preview=True)
@@ -124,11 +129,12 @@ async def take_phone_numb(m: Message, state=FSMContext):
 
 async def register_user_handlers():
     user_.message.register(start, CommandStart())
+    user_.message.register(show_phone_m, Command("search_phone"))
+    user_.callback_query.register(show_phone, F.data == 'search_phone')
+    user_.message.register(take_phone_numb, ListenUser.search_phone)
     user_.callback_query.register(suggest_post_callback, F.data == 'suggest')
     user_.callback_query.register(to_admin_callback, F.data == 'to_admin')
     user_.message.register(to_admin, ListenUser.to_admin_)
     user_.message.register(suggest_post, ListenUser.suggest_)
     user_.callback_query.register(callback_handler_public, F.data == 'public')
     user_.callback_query.register(callback_handler_again, F.data == 'again')
-    user_.callback_query.register(show_phone, F.data == 'search_phone')
-    user_.message.register(take_phone_numb, ListenUser.search_phone)
