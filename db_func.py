@@ -33,7 +33,8 @@ async def last_guests(session: AsyncSession) -> str:
 async def get_info_by_phone(m: Message):
     regex = re.search(r'\d{10}', m.text)
     if regex:
-        query = select(Posts.phone_number, Posts.signer_name, Posts.signer_id).filter(Posts.phone_number == int(f"7{m.text}"))
+        query = select(Posts.phone_number, Posts.signer_name, Posts.signer_id).filter(
+            Posts.phone_number == int(f"7{m.text}"))
         async with engine.scoped_session() as session:
             r: Result = await session.execute(query)
             result = r.fetchall()
@@ -41,6 +42,8 @@ async def get_info_by_phone(m: Message):
             new_x = [el for el, _ in groupby(result)]
             output_str = str()
             for line in new_x:
+                if line[1] == 'Анонимно':
+                    return 'Нет такого номера базе'
                 output_str += ''.join(f"+{line[0]} ссылка ➡️ <a href='https://vk.com/id{line[2]}'>{line[1]}</a>") + '\n'
             return output_str
         else:
