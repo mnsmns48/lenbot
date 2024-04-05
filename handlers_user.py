@@ -6,14 +6,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
 
-from adv.dobrotsen_adv import dobrotsen_kb
+from adv.dobrotsen_adv import dobrotsen_kb, phone_kb
 from middleware import MediaGroupMiddleware
-from db_func import write_user
+from db_func import write_user, get_info_by_phone
 from bot import bot
 from fsm import ListenUser
 from keyboards_user import main_kb, public
 from config import hv, engine
-
 
 user_ = Router()
 user_.message.middleware(MediaGroupMiddleware())
@@ -33,10 +32,11 @@ async def start(m: Message):
     await m.answer_photo(photo='AgACAgIAAxkBAAITZmQlo77a9vGGy1DlE30EBC652E9-AAIyxjEbbWMpSZgCRTKnxt4VAQADAgADeQADLwQ',
                          caption='Этот бот принимает посты в телеграм канал @leninocremia',
                          reply_markup=main_kb.as_markup())
-    await asyncio.sleep(1)
-    await m.answer_photo(photo='AgACAgIAAxkBAAIkbmXl7qS83ahNFL8TN9aTJvhfdiwkAAJo1TEbTEcwS3lDW3Qfwu-7AQADAgADbQADNAQ',
-                         caption='↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓ ↓',
+    await m.answer_photo(photo='AgACAgIAAxkBAAIs2mYQU2B8JEANJKgf8_qVirdNzZ66AALw3TEbFxCBSMq61FIW9Rb4AQADAgADeAADNAQ',
                          reply_markup=dobrotsen_kb.as_markup())
+    await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
+                         caption='Узнать владельца номера телефона ↓ ↓ ↓',
+                         reply_markup=phone_kb.as_markup())
 
 
 async def suggest_post_callback(c: CallbackQuery, state=FSMContext):
@@ -110,6 +110,18 @@ async def test(c: CallbackQuery):
     await c.message.answer('!!!!!!!!!!!!!!')
 
 
+async def show_phone(c: CallbackQuery, state=FSMContext):
+    await c.answer('Загрузка БАЗЫ ДАННЫХ номеров')
+    await c.message.answer('Введите номер телефона 10 цифр: +7.......начиная с 9-ки\nОжидаю.....')
+    await state.set_state(ListenUser.search_phone)
+
+
+async def take_phone_numb(m: Message, state=FSMContext):
+    r = await get_info_by_phone(m)
+    await m.answer(r, parse_mode='HTML', disable_web_page_preview=True)
+    await state.clear()
+
+
 async def register_user_handlers():
     user_.message.register(start, CommandStart())
     user_.callback_query.register(suggest_post_callback, F.data == 'suggest')
@@ -118,3 +130,5 @@ async def register_user_handlers():
     user_.message.register(suggest_post, ListenUser.suggest_)
     user_.callback_query.register(callback_handler_public, F.data == 'public')
     user_.callback_query.register(callback_handler_again, F.data == 'again')
+    user_.callback_query.register(show_phone, F.data == 'search_phone')
+    user_.message.register(take_phone_numb, ListenUser.search_phone)

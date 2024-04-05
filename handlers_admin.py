@@ -1,9 +1,13 @@
+import asyncio
+
 from aiogram import Router, F
 from aiogram.filters import CommandStart
+from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
+from fsm import ListenUser
 from keyboards_admin import main_admin
-from db_func import last_guests
+from db_func import last_guests, get_info_by_phone
 from config import engine
 
 from filter import AdminFilter
@@ -27,8 +31,22 @@ async def show_guests(m: Message):
     await m.answer(text=answer)
 
 
+async def show_phone(m: Message, state=FSMContext):
+    await m.answer('Введите номер телефона 10 цифр: +7.......')
+    await m.answer('Ожидаю.....')
+    await state.set_state(ListenUser.search_phone)
+
+
+async def take_phone_numb(m: Message, state=FSMContext):
+    r = await get_info_by_phone(m)
+    await m.answer(r, parse_mode='HTML', disable_web_page_preview=True)
+    await state.clear()
+
+
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
     admin_.message.register(upload_pic, F.photo)
     admin_.message.register(show_guests, F.text == "Последние гости")
+    admin_.message.register(show_phone, F.text == "Проверь номер телефона")
+    admin_.message.register(take_phone_numb, ListenUser.search_phone)

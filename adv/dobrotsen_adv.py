@@ -12,8 +12,11 @@ dbt = Router()
 
 dobrotsen_kb = InlineKeyboardBuilder()
 dobrotsen_kb.add(InlineKeyboardButton(text='Цены в доброцене',
-                                      callback_data='dobrotsen_start')
-                 )
+                                      callback_data='dobrotsen_start'))
+
+phone_kb = InlineKeyboardBuilder()
+phone_kb.add(InlineKeyboardButton(text='Проверить номер телефона',
+                                  callback_data='search_phone'))
 
 
 async def construct_dobrotsen_menu_kb() -> list:
