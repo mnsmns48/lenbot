@@ -1,6 +1,9 @@
 import asyncio
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import logging
+import sys
 
+from aiogram import Dispatcher
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dobrotsen.dobrotsen_adv import register_dbt_handlers, dbt
 from dobrotsen.scheduler_jobs import send_message1, bot_adv_trigger
 from handlers_admin import register_admin_handlers, admin_
@@ -8,12 +11,13 @@ from bot import bot, dp
 from commands import commands
 from handlers_user import register_user_handlers, user_
 from config import engine
-
+from aiogram_dialog import setup_dialogs
 
 from db_models import Base
 
 
 async def bot_working():
+
     async with engine.engine.begin() as async_connect:
         await async_connect.run_sync(Base.metadata.create_all)
     await register_admin_handlers()
@@ -22,6 +26,7 @@ async def bot_working():
     dp.include_routers(admin_, user_, dbt)
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.set_my_commands(commands)
+    setup_dialogs(dp)
     # scheduler = AsyncIOScheduler()
     # scheduler.add_job(send_message1, trigger=bot_adv_trigger)
     # scheduler.start()
@@ -36,6 +41,7 @@ async def bot_working():
 
 if __name__ == "__main__":
     try:
+        logging.basicConfig(level=logging.INFO, stream=sys.stdout)
         asyncio.run(bot_working())
     except KeyboardInterrupt:
         print('Script stopped')
