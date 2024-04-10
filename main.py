@@ -1,8 +1,8 @@
 import asyncio
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from adv.dobrotsen_adv import register_dbt_handlers, dbt
-from adv.scheduler_jobs import send_message1, bot_adv_trigger
+from dobrotsen.dobrotsen_adv import register_dbt_handlers, dbt
+from dobrotsen.scheduler_jobs import send_message1, bot_adv_trigger
 from handlers_admin import register_admin_handlers, admin_
 from bot import bot, dp
 from commands import commands

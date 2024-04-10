@@ -3,7 +3,7 @@ from aiogram.types import InlineKeyboardButton, CallbackQuery, KeyboardButton, M
 from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 from sqlalchemy import select, Result, and_
 
-from adv.dobrotsen_model import Dobrotsen
+from dobrotsen.dobrotsen_model import Dobrotsen
 from config import dobro_engine
 
 from bot import bot

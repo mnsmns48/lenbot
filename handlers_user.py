@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
 
-from adv.dobrotsen_adv import dobrotsen_kb, phone_kb
+from dobrotsen.dobrotsen_adv import dobrotsen_kb, phone_kb
 from middleware import MediaGroupMiddleware
 from db_func import write_user, get_info_by_phone
 from bot import bot
