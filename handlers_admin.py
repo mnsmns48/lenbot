@@ -46,7 +46,7 @@ async def take_phone_numb(m: Message, state=FSMContext):
     await state.clear()
 
 
-async def menu(dialog_manager: DialogManager):
+async def menu(message: Message, dialog_manager: DialogManager):
     await dialog_manager.start(MySG.dialog, mode=StartMode.RESET_STACK)
 
 
