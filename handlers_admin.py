@@ -1,12 +1,11 @@
-import asyncio
-
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 from aiogram_dialog import DialogManager, StartMode
 
-from dobrotsen.dialogs import dialog, MySG
+from dobrotsen.dialog.dialogs import dialog
+from dobrotsen.dialog.states import DobrotsenMenu
 from fsm import ListenUser
 from keyboards_admin import main_admin
 from db_func import last_guests, get_info_by_phone
@@ -47,7 +46,7 @@ async def take_phone_numb(m: Message, state=FSMContext):
 
 
 async def menu(message: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(MySG.dialog, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(DobrotsenMenu.main) #, mode=StartMode.RESET_STACK
 
 
 async def register_admin_handlers():

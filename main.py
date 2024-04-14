@@ -17,7 +17,6 @@ from db_models import Base
 
 
 async def bot_working():
-
     async with engine.engine.begin() as async_connect:
         await async_connect.run_sync(Base.metadata.create_all)
     await register_admin_handlers()
