@@ -46,7 +46,7 @@ async def take_phone_numb(m: Message, state=FSMContext):
 
 
 async def menu(message: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(DobrotsenMenu.main) #, mode=StartMode.RESET_STACK
+    await dialog_manager.start(DobrotsenMenu.start, mode=StartMode.RESET_STACK)
 
 
 async def register_admin_handlers():

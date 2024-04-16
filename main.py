@@ -4,6 +4,8 @@ import sys
 
 from aiogram import Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+
+from dobrotsen.dialog.funcs import get_empty_catalogs
 from dobrotsen.dobrotsen_adv import register_dbt_handlers, dbt
 from dobrotsen.scheduler_jobs import send_message1, bot_adv_trigger
 from handlers_admin import register_admin_handlers, admin_
@@ -26,6 +28,7 @@ async def bot_working():
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.set_my_commands(commands)
     setup_dialogs(dp)
+
     # scheduler = AsyncIOScheduler()
     # scheduler.add_job(send_message1, trigger=bot_adv_trigger)
     # scheduler.start()
