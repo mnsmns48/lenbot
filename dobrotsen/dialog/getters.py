@@ -6,23 +6,6 @@ from config import dobro_engine
 from dobrotsen.dobrotsen_model import Dobrotsen
 
 
-# async def main_menu(dialog_manager: DialogManager, **kwargs):
-#     button_id = dialog_manager.dialog_data.get('button')
-#     if not button_id:
-#         button_id = 0
-#     async with dobro_engine.scoped_session() as session:
-#         sub = select(Dobrotsen.parent).scalar_subquery()
-#         result_data: Result = await session.execute(select(Dobrotsen.id, Dobrotsen.title).filter(
-#             and_(Dobrotsen.id.in_(sub), (Dobrotsen.parent == button_id))))
-#         result_catalog_title: Result = await session.execute(select(Dobrotsen.title).filter(Dobrotsen.id == button_id))
-#     response = {'menu': result_data.fetchall()}
-#     cat_title = result_catalog_title.scalar()
-#     if cat_title:
-#         response.update({'catalog': cat_title})
-#         return response
-#     response.update({'catalog': 'Главное меню'})
-#     return response
-
 async def get_catalogs(session: AsyncSession, **kwargs):
     sub = select(Dobrotsen.parent).scalar_subquery()
     result_data: Result = await session.execute(select(Dobrotsen.id, Dobrotsen.title).filter(
