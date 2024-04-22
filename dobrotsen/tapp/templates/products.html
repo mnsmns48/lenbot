@@ -1,0 +1,24 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="main-contain">
+    <table class="table table-dark table-hover">
+        <tbody>
+            <tr>
+                <td><a href="/{{ parent }}"><button class="btn btn-dark btn-circle"
+                            class="btn btn-primary btn-circle">&lt;&lt; Назад</button></a></td>
+            </tr>
+            {% for var in data %}
+            <tr>
+                {% if var.image == 'https://dobrotsen.ru/local/templates/main_new/images/nophoto_182.png' %}
+                <td><img src="/static/placeholder.png"></td>
+                {% else %}
+                <td><img src="{{ var.image }}"></td>
+                {% endif %}
+                <td>{{ var.title }}"</td>
+                <td>{{ var.price }} руб</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

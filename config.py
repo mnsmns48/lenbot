@@ -1,5 +1,7 @@
+import os
 from asyncio import current_task
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from pydantic import SecretStr
 from sqlalchemy import NullPool
@@ -20,7 +22,9 @@ class Settings(BaseSettings):
     notification: bool
 
 
-hv = Settings(_env_file=".env")
+path = Path(os.path.abspath(__file__)).parent
+
+hv = Settings(_env_file=f"{path}/.env")
 
 
 class CoreConfig():
@@ -62,6 +66,16 @@ class AsyncDataBase:
                 yield s
         finally:
             await session.remove()
+
+    async def session_dependency(self) -> AsyncSession:
+        async with self.session_factory() as session:
+            yield session
+            await session.close()
+
+    async def scoped_session_dependency(self) -> AsyncSession:
+        session = await self.scoped_session()
+        yield session
+        await session.close()
 
 
 engine = AsyncDataBase(dbconfig.base, dbconfig.db_echo)

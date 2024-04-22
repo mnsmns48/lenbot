@@ -1,0 +1,1 @@
+uvicorn dobrotsen.tapp.start_app:app --reload
