@@ -2,7 +2,6 @@ from sqlalchemy import select, Result, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dobrotsen.dobrotsen_model import Dobrotsen
-from dobrotsen.tapp.models import Menu
 
 
 async def main_menu(session: AsyncSession, parent: int):

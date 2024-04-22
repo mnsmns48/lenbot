@@ -1,4 +1,19 @@
 {% extends 'index.html' %}
 {% block content %}
-Нет товаров в этой категории
+<div class="main-contain">
+    <table class="table table-dark table-hover">
+        <tbody>
+            <tr>
+                <td><a href="/{{ parent }}">
+                        <button class="btn btn-dark btn-circle" class="btn btn-primary btn-circle">&lt;&lt; Назад
+                        </button>
+
+                    </a></td>
+            </tr>
+            <tr>
+                <td>Нет товаров в этой категории</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 {% endblock %}

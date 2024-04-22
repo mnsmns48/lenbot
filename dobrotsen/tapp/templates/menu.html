@@ -5,7 +5,7 @@
         <tbody>
             <tr>
                 {% if data[0].parent == 0 %}
-                <td> -- Главное Меню -- </td>
+                <td> Сегодня {{ date }} г.</td>
                 {% else %}
                 <td><a href="/{{ parent }}"><button class="btn btn-dark btn-circle"
                             class="btn btn-primary btn-circle">&lt;&lt; Назад</button></a></td>

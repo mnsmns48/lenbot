@@ -20,7 +20,7 @@ async def get_main(
         session: AsyncSession = Depends(dobro_engine.session_dependency)
 ):
     data = await main_menu(session=session, parent=0)
-    context = {'request': request, 'data': data.get('data')}
+    context = {'request': request, 'data': data.get('data'), 'date': date}
     return templates.TemplateResponse(
         name="menu.html",
         context=context
@@ -36,11 +36,12 @@ async def get_page_parent(
 ):
     data = await walking_menu(session=session, parent=parent)
     if data.get('end'):
-        context = {"request": request, "data": data.get('data'), "parent": data.get('parent')}
+        context = {"request": request, "data": data.get('data'), "parent": data.get('parent'), 'date': date}
         return templates.TemplateResponse(name="products.html", context=context)
     else:
+        print(data.get('data'))
         if data.get('data'):
-            context = {"request": request, "data": data.get('data'), "parent": data.get('parent')}
+            context = {"request": request, "data": data.get('data'), "parent": data.get('parent'), 'date': date}
             return templates.TemplateResponse(name="menu.html", context=context)
         else:
             context = {"request": request}
