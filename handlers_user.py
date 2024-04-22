@@ -5,8 +5,6 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
-
-from dobrotsen.dobrotsen_adv import dobrotsen_kb, phone_kb
 from middleware import MediaGroupMiddleware
 from db_func import write_user, get_info_by_phone
 from bot import bot
@@ -32,11 +30,11 @@ async def start(m: Message):
     await m.answer_photo(photo='AgACAgIAAxkBAAITZmQlo77a9vGGy1DlE30EBC652E9-AAIyxjEbbWMpSZgCRTKnxt4VAQADAgADeQADLwQ',
                          caption='Этот бот принимает посты в телеграм канал @leninocremia',
                          reply_markup=main_kb.as_markup())
-    await m.answer_photo(photo='AgACAgIAAxkBAAIs2mYQU2B8JEANJKgf8_qVirdNzZ66AALw3TEbFxCBSMq61FIW9Rb4AQADAgADeAADNAQ',
-                         reply_markup=dobrotsen_kb.as_markup())
-    await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
-                         caption='Узнать владельца номера телефона ↓ ↓ ↓',
-                         reply_markup=phone_kb.as_markup())
+    # await m.answer_photo(photo='AgACAgIAAxkBAAIs2mYQU2B8JEANJKgf8_qVirdNzZ66AALw3TEbFxCBSMq61FIW9Rb4AQADAgADeAADNAQ',
+    #                      reply_markup=dobrotsen_kb.as_markup())
+    # await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
+    #                      caption='Узнать владельца номера телефона ↓ ↓ ↓',
+    #                      reply_markup=phone_kb.as_markup())
 
 
 async def suggest_post_callback(c: CallbackQuery, state=FSMContext):

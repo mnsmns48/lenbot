@@ -2,10 +2,6 @@ from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
-from aiogram_dialog import DialogManager, StartMode
-
-from dobrotsen.dialog.dialogs import dialog
-from dobrotsen.dialog.states import DobrotsenMenu
 from fsm import ListenUser
 from keyboards_admin import main_admin
 from db_func import last_guests, get_info_by_phone
@@ -14,7 +10,6 @@ from config import engine
 from filter import AdminFilter
 
 admin_ = Router()
-admin_.include_router(dialog)
 
 
 async def start(m: Message):
@@ -45,10 +40,6 @@ async def take_phone_numb(m: Message, state=FSMContext):
     await state.clear()
 
 
-async def menu(message: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(DobrotsenMenu.start, mode=StartMode.RESET_STACK)
-
-
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
@@ -56,4 +47,3 @@ async def register_admin_handlers():
     admin_.message.register(show_guests, F.text == "Последние гости")
     admin_.message.register(show_phone, F.text == "Проверь номер телефона")
     admin_.message.register(take_phone_numb, ListenUser.search_phone)
-    admin_.message.register(menu, Command("menu"))
