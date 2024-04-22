@@ -39,7 +39,6 @@ async def get_page_parent(
         context = {"request": request, "data": data.get('data'), "parent": data.get('parent'), 'date': date}
         return templates.TemplateResponse(name="products.html", context=context)
     else:
-        print(data.get('data'))
         if data.get('data'):
             context = {"request": request, "data": data.get('data'), "parent": data.get('parent'), 'date': date}
             return templates.TemplateResponse(name="menu.html", context=context)
