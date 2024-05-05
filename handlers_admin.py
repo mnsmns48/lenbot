@@ -8,7 +8,7 @@ from bot import bot
 from fsm import ListenUser
 from keyboards_admin import main_admin
 from db_func import last_guests, get_info_by_phone
-from config import engine
+from config import engine, hv
 
 from filter import AdminFilter
 from keyboards_user import dobrotsen_kb
@@ -47,7 +47,7 @@ async def take_phone_numb(m: Message, state=FSMContext):
 async def send_dobrotsen_marketing(m: Message):
     kb = InlineKeyboardBuilder()
     kb.add(InlineKeyboardButton(text="Цены Доброцена", url="https://t.me/pgtlenino_bot"))
-    await bot.send_photo(chat_id=-1001819403719,
+    await bot.send_photo(chat_id=hv.tg_chat_id,
                          photo='AgACAgIAAxkBAAIxqGY3PMK0W54gK0l_Xyqe3OaeIpdCAAKR1jEbO1rASUiom6L0TtkgAQADAgADeAADNQQ',
                          reply_markup=kb.as_markup())
 
