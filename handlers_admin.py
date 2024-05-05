@@ -1,13 +1,17 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+from bot import bot
 from fsm import ListenUser
 from keyboards_admin import main_admin
 from db_func import last_guests, get_info_by_phone
 from config import engine
 
 from filter import AdminFilter
+from keyboards_user import dobrotsen_kb
 
 admin_ = Router()
 
@@ -40,6 +44,14 @@ async def take_phone_numb(m: Message, state=FSMContext):
     await state.clear()
 
 
+async def send_dobrotsen_marketing(m: Message):
+    kb = InlineKeyboardBuilder()
+    kb.add(InlineKeyboardButton(text="Цены Доброцена", url="https://t.me/pgtlenino_bot"))
+    await bot.send_photo(chat_id=-1001819403719,
+                         photo='AgACAgIAAxkBAAIxqGY3PMK0W54gK0l_Xyqe3OaeIpdCAAKR1jEbO1rASUiom6L0TtkgAQADAgADeAADNQQ',
+                         reply_markup=kb.as_markup())
+
+
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
@@ -47,3 +59,4 @@ async def register_admin_handlers():
     admin_.message.register(show_guests, F.text == "Последние гости")
     admin_.message.register(show_phone, F.text == "Проверь номер телефона")
     admin_.message.register(take_phone_numb, ListenUser.search_phone)
+    admin_.message.register(send_dobrotsen_marketing, F.text == 'Запостить рекламу доброцен')
