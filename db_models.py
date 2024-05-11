@@ -15,7 +15,7 @@ class Base(DeclarativeBase):
 
 class Visitors(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    time: Mapped[datetime.datetime | None] = mapped_column(
+    time: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=False), server_default=func.now())
     tg_id: Mapped[int] = mapped_column(BigInteger)
     tg_username: Mapped[str] = mapped_column(nullable=True)
