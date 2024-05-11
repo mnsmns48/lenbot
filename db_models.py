@@ -25,7 +25,7 @@ class Visitors(Base):
 class Posts(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True, default=Sequence('posts_id_seq', start=1))
     post_id: Mapped[int | None] = mapped_column(BigInteger)
-    time: Mapped[datetime.datetime | None] = mapped_column(
+    time: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=False), server_default=func.now())
     group_id: Mapped[int | None] = mapped_column(BigInteger)
     group_name: Mapped[str | None]
