@@ -5,5 +5,6 @@ kb = [
     [KeyboardButton(text="Проверь номер телефона")],
     [KeyboardButton(text="Запостить рекламу доброцен")],
     [KeyboardButton(text='Доброцен', web_app=WebAppInfo(url='https://1385988-ci25991.tw1.ru'))],
+    [KeyboardButton(text="Диалоги")],
 ]
 main_admin = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True, is_persistent=True)

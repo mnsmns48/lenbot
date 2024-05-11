@@ -1,5 +1,7 @@
 import datetime
-from sqlalchemy import DateTime, func, BigInteger, Sequence
+from typing import Optional
+
+from sqlalchemy import DateTime, func, BigInteger, Sequence, BIGINT
 from sqlalchemy.orm import DeclarativeBase, declared_attr, Mapped, mapped_column
 
 
@@ -36,3 +38,17 @@ class Posts(Base):
     repost_source_name: Mapped[str | None]
     attachments: Mapped[str | None]
     source: Mapped[str | None]
+
+
+class LeninoWork(Base):
+    id: Mapped[int] = mapped_column(BIGINT, primary_key=True, unique=True)
+    title: Mapped[str]
+    author: Mapped[Optional[str]]
+    payment: Mapped[str]
+    cond: Mapped[str]
+    desc: Mapped[str]
+    performance: Mapped[str]
+    locality: Mapped[str]
+    link: Mapped[str]
+    updated_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=False))
+    publication: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=False))

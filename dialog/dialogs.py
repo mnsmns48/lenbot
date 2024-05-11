@@ -1,8 +1,9 @@
-from aiogram_dialog import Dialog, Window
-from aiogram_dialog.widgets.text import Const
+from aiogram_dialog import Dialog
+
+from dialog.getters import dialog_get_data
+from dialog.windows import vacancies_second, vacancies_first
 
 vacancies = Dialog(
-    Window(
-        Const('Список вакансий')
-    )
-)
+    vacancies_first(),
+    vacancies_second(),
+    getter=dialog_get_data)

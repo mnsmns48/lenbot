@@ -3,8 +3,10 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram_dialog import DialogManager
 
 from bot import bot
+from dialog.states import Vacancies
 from fsm import ListenUser
 from keyboards_admin import main_admin
 from db_func import last_guests, get_info_by_phone
@@ -49,14 +51,19 @@ async def send_dobrotsen_marketing(m: Message):
     kb.add(InlineKeyboardButton(text="Цены Доброцена", url="https://t.me/pgtlenino_bot"))
     await bot.send_photo(chat_id=hv.tg_chat_id,
                          photo='AgACAgIAAxkBAAIxqGY3PMK0W54gK0l_Xyqe3OaeIpdCAAKR1jEbO1rASUiom6L0TtkgAQADAgADeAADNQQ',
+                         disable_notification=hv.notification,
                          reply_markup=kb.as_markup())
+
+
+async def test_dialogs(m: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(Vacancies.vac_list)
 
 
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
     admin_.message.register(upload_pic, F.photo)
-    admin_.message.register(show_guests, F.text == "Последние гости")
     admin_.message.register(show_phone, F.text == "Проверь номер телефона")
     admin_.message.register(take_phone_numb, ListenUser.search_phone)
     admin_.message.register(send_dobrotsen_marketing, F.text == 'Запостить рекламу доброцен')
+    admin_.message.register(test_dialogs, F.text == 'Диалоги')

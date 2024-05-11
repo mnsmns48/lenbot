@@ -2,6 +2,7 @@ import asyncio
 import logging
 import sys
 
+from dialog.dialogs import vacancies
 from handlers_admin import register_admin_handlers, admin_
 from bot import bot, dp
 from commands import commands
@@ -16,7 +17,7 @@ async def bot_working():
         await async_connect.run_sync(Base.metadata.create_all)
     await register_admin_handlers()
     await register_user_handlers()
-    dp.include_routers(admin_, user_)
+    dp.include_routers(admin_, user_, vacancies)
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.set_my_commands(commands)
 
