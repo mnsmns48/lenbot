@@ -1,30 +1,53 @@
-from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Button, Back, ListGroup
-from aiogram_dialog.widgets.text import Const, Format
+from operator import attrgetter
 
-from dialog.callbacks import button1_clicked
-from dialog.getters import vacancies_list_getter, window2_get_data
+from aiogram_dialog import Window
+from aiogram_dialog.widgets.kbd import Back, ScrollingGroup, Select, Column, Url, Cancel, Button
+from aiogram_dialog.widgets.text import Const, Format, Multi
+
+from dialog.callbacks import select_vac, dialog_close
+from dialog.getters import vacancies_list_getter, vac_info_getter
 from dialog.states import Vacancies
 
 
-def vacancies_first():
+def vacancies_window():
     return Window(
-        ListGroup(
-            Button(
-
-            )
+        Const("..........................................................................."),
+        ScrollingGroup(
+            Select(
+                Format(text="{item.title}"),
+                id='button',
+                item_id_getter=attrgetter('id'),
+                items='vacancies_list_',
+                on_click=select_vac
+            ),
+            id='main',
+            width=1,
+            height=8,
+            hide_on_single_page=True
         ),
-
+        Button(Const(" -- Выход -- "),
+               id="btn",
+               on_click=dialog_close),
         state=Vacancies.vac_list,
-        getter=vacancies_list_getter)
+        getter=vacancies_list_getter
+    )
 
 
-def vacancies_second():
+def info_window(**kwargs):
     return Window(
-        Format("Hello, {name}!"),
-        Format("Something: {something}"),
-        Format("User input: {dialog_data[user_input]}"),
-        Back(text=Const("Back")),
-        state=Vacancies.second,
-        getter=window2_get_data
+        Multi(
+            Format("Вакансия: {info.title}"),
+            Format("Обновлено: {date}"),
+            Format("Автор объявления: {info.author}"),
+            Format("Адрес: {info.locality}"),
+            Format("Зарплата: {info.payment}"),
+            Format("Условия: {info.cond}"),
+            Format("\nОписание: {info.desc}")),
+        Url(
+            Format("Связаться с автором"),
+            Format("{info.link}"),
+        ),
+        Column(Back(Const("<< Назад к списку вакансий"))),
+        state=Vacancies.vac_info,
+        getter=vac_info_getter
     )

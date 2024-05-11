@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from aiogram_dialog import DialogManager
 from sqlalchemy import select, Result
 
 from config import engine
@@ -7,22 +8,22 @@ from db_models import LeninoWork
 
 
 async def vacancies_list_getter(**kwargs):
-    query = select(LeninoWork).order_by(LeninoWork.updated_at.desc())
+    query = select(LeninoWork.id, LeninoWork.title).order_by(LeninoWork.updated_at.desc())
     async with engine.scoped_session() as session:
         r = await session.execute(query)
-        data = r.scalars()
+        data = r.fetchall()
     return {
-        "vacancies_list_getter": data,
+        "vacancies_list_": data
     }
 
 
-async def window2_get_data(**kwargs):
+async def vac_info_getter(dialog_manager: DialogManager, **kwargs):
+    v_id = dialog_manager.dialog_data.get('id')
+    query = select(LeninoWork).filter(LeninoWork.id == v_id)
+    async with engine.scoped_session() as session:
+        r = await session.execute(query)
+        data = r.scalar()
     return {
-        "something": "data from Window2 getter",
-    }
-
-
-async def dialog_get_data(**kwargs):
-    return {
-        "name": "Tishka17",
+        'info': data,
+        'date': datetime.strftime(data.updated_at, "%d.%m.%Y %H:%M"),
     }

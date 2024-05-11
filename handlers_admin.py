@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram_dialog import DialogManager
+
 
 from bot import bot
 from dialog.states import Vacancies
@@ -55,10 +55,6 @@ async def send_dobrotsen_marketing(m: Message):
                          reply_markup=kb.as_markup())
 
 
-async def test_dialogs(m: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(Vacancies.vac_list)
-
-
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
@@ -66,4 +62,3 @@ async def register_admin_handlers():
     admin_.message.register(show_phone, F.text == "Проверь номер телефона")
     admin_.message.register(take_phone_numb, ListenUser.search_phone)
     admin_.message.register(send_dobrotsen_marketing, F.text == 'Запостить рекламу доброцен')
-    admin_.message.register(test_dialogs, F.text == 'Диалоги')

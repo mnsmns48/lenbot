@@ -31,3 +31,8 @@ search_phone_kb.add(InlineKeyboardButton(
     text='Пробить номер телефона',
     callback_data='search_phone'))
 
+work_kb = InlineKeyboardBuilder()
+work_kb.add(InlineKeyboardButton(
+    text='Список вакансий',
+    callback_data='vacancies'
+))

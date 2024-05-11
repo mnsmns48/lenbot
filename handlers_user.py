@@ -5,11 +5,14 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
+from aiogram_dialog import DialogManager, StartMode
+
+from dialog.states import Vacancies
 from middleware import MediaGroupMiddleware
 from db_func import write_user, get_info_by_phone
 from bot import bot
 from fsm import ListenUser
-from keyboards_user import main_kb, public, dobrotsen_kb, search_phone_kb
+from keyboards_user import main_kb, public, dobrotsen_kb, search_phone_kb, work_kb
 from config import hv, engine
 
 user_ = Router()
@@ -35,6 +38,9 @@ async def start(m: Message):
     await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
                          caption='Узнать владельца номера телефона ↓ ↓ ↓',
                          reply_markup=search_phone_kb.as_markup())
+    await m.answer_photo(photo='AgACAgIAAxkBAAIyoGY_1gg-T9EXhzQs1hlcZ_RlUoE7AALN2TEbK_wAAUq_gljTha3WdQEAAwIAA20AAzUE',
+                         caption='Найди работу в Ленинском районе',
+                         reply_markup=work_kb.as_markup())
 
 
 async def suggest_post_callback(c: CallbackQuery, state=FSMContext):
@@ -125,10 +131,15 @@ async def take_phone_numb(m: Message, state=FSMContext):
     await state.clear()
 
 
+async def vacancies_dialogs(m: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(Vacancies.vac_list, mode=StartMode.RESET_STACK)
+
+
 async def register_user_handlers():
     user_.message.register(start, CommandStart())
     user_.message.register(show_phone_m, Command("search_phone"))
     user_.callback_query.register(show_phone, F.data == 'search_phone')
+    user_.callback_query.register(vacancies_dialogs, F.data == 'vacancies')
     user_.message.register(take_phone_numb, ListenUser.search_phone)
     user_.callback_query.register(suggest_post_callback, F.data == 'suggest')
     user_.callback_query.register(to_admin_callback, F.data == 'to_admin')

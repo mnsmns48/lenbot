@@ -1,9 +1,7 @@
 from aiogram_dialog import Dialog
-
-from dialog.getters import dialog_get_data
-from dialog.windows import vacancies_second, vacancies_first
+from dialog.windows import vacancies_window, info_window
 
 vacancies = Dialog(
-    vacancies_first(),
-    vacancies_second(),
-    getter=dialog_get_data)
+    vacancies_window(),
+    info_window()
+)
