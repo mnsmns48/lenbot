@@ -48,7 +48,7 @@ async def send_work_marketing(m: Message):
     await bot.send_photo(chat_id=hv.tg_chat_id,
                          photo='AgACAgIAAxkBAAIyoGY_1gg-T9EXhzQs1hlcZ_RlUoE7AALN2TEbK_wAAUq_gljTha3WdQEAAwIAA20AAzUE',
                          disable_notification=hv.notification,
-                         reply_markup=work_kb.as_markup())
+                         reply_markup=kb.as_markup())
 
 
 async def register_admin_handlers():
