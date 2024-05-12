@@ -28,7 +28,7 @@ dobrotsen_kb.add(InlineKeyboardButton(
 
 search_phone_kb = InlineKeyboardBuilder()
 search_phone_kb.add(InlineKeyboardButton(
-    text='Пробить номер телефона',
+    text='Проверка номера',
     callback_data='search_phone'))
 
 work_kb = InlineKeyboardBuilder()

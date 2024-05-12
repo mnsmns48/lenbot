@@ -38,8 +38,8 @@ async def start(m: Message):
     await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
                          caption='Узнать владельца номера телефона ↓ ↓ ↓',
                          reply_markup=search_phone_kb.as_markup())
-    await m.answer_photo(photo='AgACAgIAAxkBAAIyoGY_1gg-T9EXhzQs1hlcZ_RlUoE7AALN2TEbK_wAAUq_gljTha3WdQEAAwIAA20AAzUE',
-                         caption='Найди работу в Ленинском районе',
+    await m.answer_photo(photo='AgACAgIAAxkBAAIzrGZAjVsEs1tPgOAuzByAY3EAAWqykQACRNsxG2uDAAFKvziH6AABwdK8AQADAgADeQADNQQ',
+                         caption='Работа в Ленинском районе',
                          reply_markup=work_kb.as_markup())
 
 
