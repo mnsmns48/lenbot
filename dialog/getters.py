@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from aiogram_dialog import DialogManager
-from sqlalchemy import select, Result
+from sqlalchemy import select
 
 from config import engine
 from db_models import LeninoWork
