@@ -22,9 +22,9 @@ class Settings(BaseSettings):
     notification: bool
 
 
-path = Path(os.path.abspath(__file__)).parent
+root_path = Path(os.path.abspath(__file__)).parent
 
-hv = Settings(_env_file=f"{path}/.env")
+hv = Settings(_env_file=f"{root_path}/.env")
 
 
 class CoreConfig():

@@ -6,3 +6,7 @@ class ListenUser(StatesGroup):
     to_public_ = State()
     to_admin_ = State()
     search_phone = State()
+
+
+class ListenAdmin(StatesGroup):
+    get_weather_screen = State()
