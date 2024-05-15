@@ -9,7 +9,7 @@ from dialog.getters import vacancies_list_getter, vac_info_getter
 from dialog.states import Vacancies
 
 
-def vacancies_window():
+def vacancies_window(**kwargs):
     return Window(
         Const("..........................................................................."),
         ScrollingGroup(

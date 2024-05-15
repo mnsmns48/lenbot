@@ -17,7 +17,7 @@ async def select_vac(c: CallbackQuery, widget: Any, dialog_manager: DialogManage
 async def dialog_close(c: CallbackQuery, widget: Any, dialog_manager: DialogManager):
     await dialog_manager.done()
     await bot.send_photo(chat_id=c.from_user.id,
-                         photo='AgACAgIAAxkBAAIyoGY_1gg-T9EXhzQs1hlcZ_RlUoE7AALN2TEbK_wAAUq_gljTha3WdQEAAwIAA20AAzUE',
+                         photo='AgACAgIAAxkBAAIzn2ZAikXxLIHIgEjP6CJ905PAUfFmAAI62zEba4MAAUrp7N-ctS2YAgEAAwIAA3kAAzUE',
                          caption='Найди работу в Ленинском районе',
                          reply_markup=work_kb.as_markup()
                          )
