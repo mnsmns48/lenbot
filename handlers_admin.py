@@ -104,6 +104,6 @@ async def register_admin_handlers():
     admin_.message.register(get_weather, F.text == "Прислать скриншот яндекс погоды")
     admin_.message.register(edit_pic, F.photo, ListenAdmin.get_weather_screen)
     admin_.message.register(upload_pic, F.photo)
-    admin_.message.register(show_guests, F.text == "Последние гости")
+    admin_.message.register(show_guests, F.text == "Последние гости БОТА")
     admin_.message.register(send_dobrotsen_marketing, F.text == 'Запостить рекламу доброцен')
     admin_.message.register(send_work_marketing, F.text == 'Запостить работу')
