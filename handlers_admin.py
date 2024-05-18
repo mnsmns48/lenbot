@@ -74,7 +74,9 @@ async def weather_answer(c: CallbackQuery, state=FSMContext):
         await state.clear()
     if c.data == 'send_weather':
         await c.answer('Отправлено')
-        await c.bot.send_photo(chat_id=hv.tg_chat_id, photo=FSInputFile(f"{root_path}/pic_edit/2.jpg"))
+        await c.bot.send_photo(chat_id=hv.tg_chat_id,
+                               photo=FSInputFile(f"{root_path}/pic_edit/2.jpg"),
+                               disable_notification=hv.notification)
     await c.message.delete()
 
 
