@@ -5,7 +5,7 @@ from config import root_path
 
 
 def create_weather():
-    d_font = ImageFont.truetype(font=f"{root_path}/pic_edit/SecondaSoftIt.woff", size=320)
+    d_font = ImageFont.truetype(font=f"{root_path}/pic_edit/SecondaSoftIt.woff", size=300)
     e_font = ImageFont.truetype(font=f"{root_path}/pic_edit/RFDewi-Black.ttf", size=110)
     f_font = ImageFont.truetype(font=f"{root_path}/pic_edit/RFDewi-Regular.ttf", size=110)
     pogoda = Image.open(f"{root_path}/pic_edit/1.jpg")
@@ -37,7 +37,7 @@ def create_weather():
         11: 'Ноя',
         12: 'Дек',
     }
-    drawer.text((85, 175), str(datetime.now().date().day), font=d_font, fill='white')
+    drawer.text((70, 175), str(datetime.now().date().day), font=d_font, fill='white')
     drawer.text((50, 35), str(weekdays.get(datetime.now().date().weekday())), font=e_font, fill='Red')
     drawer.text((218, 35), str(months.get(datetime.now().month)), font=f_font, fill='Grey')
     ex.save(f"{root_path}/pic_edit/2.jpg")
