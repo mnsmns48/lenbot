@@ -6,12 +6,14 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo, FSInputFile, InputFile, \
     CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram_dialog import DialogManager, StartMode
 
 from bot import bot
-from dialog.states import Vacancies
+from dialog_premoderate.states_premod import PreModerateStates
+from dialog_vacansy.states import Vacancies
 from fsm import ListenUser, ListenAdmin
 from keyboards_admin import main_admin
-from db_func import last_guests, get_info_by_phone
+from func import last_guests, get_info_by_phone
 from config import engine, hv, root_path
 
 from filter import AdminFilter
@@ -98,9 +100,14 @@ async def send_work_marketing(m: Message):
                          reply_markup=kb.as_markup())
 
 
+async def posts_dialogs(m: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(PreModerateStates.post_list, mode=StartMode.RESET_STACK)
+
+
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
+    admin_.message.register(posts_dialogs, F.text == 'Менеджер Постов')
     admin_.callback_query.register(weather_answer, F.data.in_({'send_weather', 'cancel'}),
                                    ListenAdmin.get_weather_screen)
     admin_.message.register(get_weather, F.text == "Прислать скриншот яндекс погоды")

@@ -5,7 +5,7 @@ from aiogram.types import CallbackQuery
 from aiogram_dialog import DialogManager
 
 from bot import bot
-from dialog.states import Vacancies
+from dialog_vacansy.states import Vacancies
 from keyboards_user import work_kb
 
 

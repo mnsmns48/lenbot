@@ -7,9 +7,9 @@ from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram_dialog import DialogManager, StartMode
 
-from dialog.states import Vacancies
+from dialog_vacansy.states import Vacancies
 from middleware import MediaGroupMiddleware
-from db_func import write_user, get_info_by_phone
+from func import write_user, get_info_by_phone
 from bot import bot
 from fsm import ListenUser
 from keyboards_user import main_kb, public, dobrotsen_kb, search_phone_kb, work_kb

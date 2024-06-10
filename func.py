@@ -6,7 +6,7 @@ from sqlalchemy import insert, Sequence, select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import engine
-from db_models import Visitors, Posts
+from models import Visitors, Posts
 
 
 async def write_user(m: Message, session: AsyncSession):

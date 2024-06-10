@@ -4,9 +4,9 @@ from aiogram_dialog import Window
 from aiogram_dialog.widgets.kbd import Back, ScrollingGroup, Select, Column, Url, Cancel, Button
 from aiogram_dialog.widgets.text import Const, Format, Multi
 
-from dialog.callbacks import select_vac, dialog_close
-from dialog.getters import vacancies_list_getter, vac_info_getter
-from dialog.states import Vacancies
+from dialog_vacansy.callbacks import select_vac, dialog_close
+from dialog_vacansy.getters import vacancies_list_getter, vac_info_getter
+from dialog_vacansy.states import Vacancies
 
 
 def vacancies_window(**kwargs):

@@ -4,7 +4,7 @@ from aiogram_dialog import DialogManager
 from sqlalchemy import select
 
 from config import engine
-from db_models import LeninoWork
+from models import LeninoWork
 
 
 async def vacancies_list_getter(**kwargs):
