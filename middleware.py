@@ -1,8 +1,13 @@
 import asyncio
-from typing import Union, Callable, Any, Awaitable
+from typing import Union, Callable, Any, Awaitable, Dict
 
 from aiogram import BaseMiddleware
-from aiogram.types import Message
+from aiogram.types import Message, TelegramObject, Update
+from sqlalchemy.ext.asyncio import async_sessionmaker
+
+from bot import dp
+from config import engine
+from handlers_admin import admin_
 
 
 class MediaGroupMiddleware(BaseMiddleware):
@@ -33,3 +38,14 @@ class MediaGroupMiddleware(BaseMiddleware):
         if message.media_group_id and data.get("_is_last"):
             del self.album_data[message.media_group_id]
             del data['_is_last']
+
+
+@dp.update.middleware()
+async def database_transaction_middleware(
+        handler: Callable[[Update, Dict[str, Any]], Awaitable[Any]],
+        event: Update,
+        data: Dict[str, Any]
+) -> Any:
+    async with engine.scoped_session() as session:
+        data['session'] = session
+        return await handler(event, data)

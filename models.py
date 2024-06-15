@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy import DateTime, func, BigInteger, Sequence, BIGINT
+from sqlalchemy import DateTime, func, BigInteger, Sequence, BIGINT, Text
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import DeclarativeBase, declared_attr, Mapped, mapped_column
 
@@ -33,7 +33,7 @@ class Posts(Base):
     signer_id: Mapped[int | None] = mapped_column(BigInteger)
     signer_name: Mapped[str]
     phone_number: Mapped[int | None] = mapped_column(BigInteger)
-    text: Mapped[str | None]
+    text: Mapped[str | None] = mapped_column(Text)
     is_repost: Mapped[bool | None]
     repost_source_id: Mapped[int | None] = mapped_column(BigInteger)
     repost_source_name: Mapped[str | None]
@@ -47,7 +47,7 @@ class LeninoWork(Base):
     author: Mapped[Optional[str]]
     payment: Mapped[str]
     cond: Mapped[str]
-    desc: Mapped[str]
+    desc: Mapped[str] = mapped_column(Text)
     performance: Mapped[str]
     locality: Mapped[str]
     link: Mapped[str]
@@ -65,7 +65,7 @@ class PreModData(Base):
     signer_id: Mapped[int | None] = mapped_column(BIGINT)
     signer_name: Mapped[str | None]
     phone_number: Mapped[int | None] = mapped_column(BIGINT)
-    text: Mapped[str | None]
+    text: Mapped[str | None] = mapped_column(Text)
     is_repost: Mapped[bool | None]
     repost_source_id: Mapped[int | None] = mapped_column(BIGINT)
     repost_source_title: Mapped[str | None]

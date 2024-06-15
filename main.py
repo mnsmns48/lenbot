@@ -11,11 +11,13 @@ from handlers_user import register_user_handlers, user_
 from config import engine
 
 from models import Base
+from test_dialog import test_dialog
 
 
 async def bot_working():
     async with engine.engine.begin() as async_connect:
         await async_connect.run_sync(Base.metadata.create_all)
+
     await register_admin_handlers()
     await register_user_handlers()
     dp.include_routers(admin_, user_, vacancies, posts_dialog)
@@ -24,7 +26,7 @@ async def bot_working():
 
     try:
         print('bot start')
-        await dp.start_polling(bot)
+        await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
     finally:
         print('bot stop')

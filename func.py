@@ -1,5 +1,7 @@
 import re
 from itertools import groupby
+from operator import itemgetter
+import random
 
 from aiogram.types import Message
 from sqlalchemy import insert, Sequence, select, Result
@@ -7,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import engine
 from models import Visitors, Posts
+from yt_dlp import YoutubeDL, DownloadError
 
 
 async def write_user(m: Message, session: AsyncSession):
@@ -50,3 +53,27 @@ async def get_info_by_phone(m: Message):
             return 'Нет такого номера базе'
     else:
         return 'Нужно ввести 10 цифр номера телефона без +7'
+
+
+async def download_video(video: str, format_quality: list) -> str | None:
+    name = random.randint(1, 10000)
+    ydl_opts = {'outtmpl': f'attachments/{name}.mp4',
+                'ffmpeg-location': 'ffmpeg',
+                'ignore-errors': True,
+                }
+    try:
+        with YoutubeDL(ydl_opts) as ydl:
+            formats = list()
+            pre_res = ydl.extract_info(video, download=False)
+            [formats.append(format_) for format_ in pre_res.get('formats') if format_.get('height')]
+            formats.sort(key=itemgetter('height'))
+            for format_ in formats:
+                if format_.get('height') in format_quality:
+                    ydl_opts['format'] = format_.get('format_id')
+                    break
+        with YoutubeDL(ydl_opts) as ydl:
+            result = ydl.extract_info(video)
+            title = ydl.prepare_filename(result)
+        return title
+    except DownloadError:
+        print('DownloadError')
