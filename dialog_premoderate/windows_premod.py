@@ -1,16 +1,65 @@
-import json
-import os
-from operator import attrgetter, itemgetter
+from operator import attrgetter
 
 from aiogram import F
-from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Button, Column, Back, Url, NumberedPager
-from aiogram_dialog.widgets.media import MediaScroll, DynamicMedia
-from aiogram_dialog.widgets.text import Const, Format, Multi, ScrollingText, Text, List
+from aiogram.enums import ContentType
+from aiogram.types import WebAppInfo
 
-from dialog_premoderate.callbacks_premode import dialog_close, select_post, start_list
-from dialog_premoderate.getters_premode import posts_list_getter, post_info_getter
-from dialog_premoderate.states_premod import PreModerateStates
+from aiogram_dialog import Window
+from aiogram_dialog.widgets.input import MessageInput
+from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Button, Column, Url, NumberedPager, Row, WebApp
+from aiogram_dialog.widgets.media import MediaScroll, DynamicMedia
+from aiogram_dialog.widgets.text import Const, Format, Multi, Text
+
+from config import root_path
+from dialog_premoderate.callbacks_premode import dialog_close, select_post, start_list, clean_cashe_folder, \
+    posts_manager_click, yandex_weather_click, callback_weather_handler, send_weather_click, choose_marketing, \
+    send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click
+from dialog_premoderate.getters_premode import posts_list_getter, post_info_getter, send_weather_photo
+from dialog_premoderate.states_premod import PreModerateStates, AdminMainMenu, MarketingState
+from fsm import ListenAdmin
+
+
+def start_admin_menu(**kwargs):
+    return Window(
+        Const('Admin mode'),
+        Column(
+            Button(text=Format('Менеджер постов'),
+                   id='back_btn',
+                   on_click=posts_manager_click),
+            Button(text=Format('Яндекс погода'),
+                   id='ya_weather_btn',
+                   on_click=yandex_weather_click),
+            Button(text=Format('Гости бота'),
+                   id='guests_btn',
+                   on_click=get_guests_click),
+            Button(text=Format('Отправить рекламу'),
+                   id='marketing_btn',
+                   on_click=choose_marketing),
+            WebApp(text=Const('Доброцен WebApp'), url=Const('https://1385988-ci25991.tw1.ru')),
+            id='admin_main_id'
+        ),
+        state=AdminMainMenu.start
+    )
+
+
+def yandex_weather_window(**kwargs):
+    return Window(
+        Format("Жду скриншот"),
+        MessageInput(callback_weather_handler, content_types=[ContentType.PHOTO]),
+        state=ListenAdmin.get_weather_screen,
+    )
+
+
+def send_weather(**kwargs):
+    return Window(
+        DynamicMedia(selector='weather_photo'),
+        Row(
+            Button(Const("Отправить"), id="go_btn", on_click=send_weather_click),
+            Button(Const("Отмена"), id="cancel_btn", on_click=weather_cancel)
+        ),
+        state=ListenAdmin.send_weather,
+        getter=send_weather_photo
+    )
 
 
 def pre_moderate_posts(**kwargs):
@@ -29,6 +78,9 @@ def pre_moderate_posts(**kwargs):
             height=10,
             hide_on_single_page=True
         ),
+        Button(Const("Очистить кэш"),
+               id="clean_cash_btn",
+               on_click=clean_cashe_folder),
         Button(Const(" -- Выход -- "),
                id="btn",
                on_click=dialog_close),
@@ -38,10 +90,6 @@ def pre_moderate_posts(**kwargs):
 
 
 def info_window(**kwargs):
-    files_to_del = kwargs.get('files_to_del')
-    if files_to_del:
-        for file in kwargs.get('files_to_del'):
-            os.remove(file)
     return Window(
         Multi(
             Format(text="Вложения: {attachments_info}", when=F['attachments_info']),
@@ -63,4 +111,25 @@ def info_window(**kwargs):
                on_click=start_list),
         state=PreModerateStates.post_info,
         getter=post_info_getter
+    )
+
+
+def marketing_window(**kwargs):
+    return Window(
+        Const('Нужно выбрать'),
+        Column(
+            Button(Const("Реклама Доброцен"),
+                   id="dobrotsen_btn",
+                   on_click=send_dobrotsen),
+            Button(Const("Отправить вакансии"),
+                   id="leninowork_btn",
+                   on_click=send_lenino_work)
+        ),
+        state=MarketingState.start
+    )
+
+
+def visitors(**kwargs):
+    return Window(
+
     )

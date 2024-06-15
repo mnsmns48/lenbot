@@ -7,5 +7,5 @@ kb = [
     [KeyboardButton(text="Запостить рекламу доброцен")],
     [KeyboardButton(text="Запостить работу")],
 ]
-main_admin = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True, is_persistent=True)
+main_admin = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True, is_persistent=True, one_time_keyboard=True)
 

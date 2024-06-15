@@ -10,3 +10,4 @@ class ListenUser(StatesGroup):
 
 class ListenAdmin(StatesGroup):
     get_weather_screen = State()
+    send_weather = State()

@@ -37,7 +37,7 @@ def create_weather():
         11: 'Ноя',
         12: 'Дек',
     }
-    drawer.text((70, 175), str(datetime.now().date().day), font=d_font, fill='white')
+    drawer.text((78, 175), str(datetime.now().date().day), font=d_font, fill='white')
     drawer.text((50, 35), str(weekdays.get(datetime.now().date().weekday())), font=e_font, fill='Red')
     drawer.text((218, 35), str(months.get(datetime.now().month)), font=f_font, fill='Grey')
     ex.save(f"{root_path}/pic_edit/2.jpg")

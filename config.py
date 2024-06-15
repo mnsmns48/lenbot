@@ -12,6 +12,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     tg_bot_admin: list[int]
+    editor_admin: int
     tg_chat_id: str
     bot_token: SecretStr
     db_username: str

@@ -2,7 +2,7 @@ import asyncio
 import logging
 import sys
 
-from dialog_premoderate.dialog_main_premod import posts_dialog
+from dialog_premoderate.dialog_main_premod import admin_main_menu, admin_post_manager
 from dialog_vacansy.dialogs import vacancies
 from handlers_admin import register_admin_handlers, admin_
 from bot import bot, dp
@@ -11,7 +11,6 @@ from handlers_user import register_user_handlers, user_
 from config import engine
 
 from models import Base
-from test_dialog import test_dialog
 
 
 async def bot_working():
@@ -20,7 +19,7 @@ async def bot_working():
 
     await register_admin_handlers()
     await register_user_handlers()
-    dp.include_routers(admin_, user_, vacancies, posts_dialog)
+    dp.include_routers(admin_, user_, vacancies)
     await bot.delete_webhook(drop_pending_updates=True)
     await bot.set_my_commands(commands)
 

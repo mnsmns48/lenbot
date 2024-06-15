@@ -8,6 +8,8 @@ from datetime import datetime
 from aiogram.enums import ContentType
 from aiogram_dialog import DialogManager
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
+from aiogram_dialog.api.protocols import MediaIdStorageProtocol
+from aiogram_dialog.context.media_storage import MediaIdStorage
 from sqlalchemy import select, Row, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -45,7 +47,6 @@ async def posts_list_getter(session: AsyncSession, **kwargs):
 
 
 async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession, **kwargs):
-    files_to_del = list()
     internal_id = dialog_manager.dialog_data.get('internal_id')
     query = select(PreModData).filter(PreModData.internal_id == internal_id)
     r = await session.execute(query)
@@ -67,12 +68,19 @@ async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession,
                     files.append(
                         MediaAttachment(type=ContentType.VIDEO,
                                         path=f"{root_path}/{video_title}"))
-                    files_to_del.append(f"{root_path}/{video_title}")
     return {
         'date': data.date.strftime("%d.%m %H:%M"),
         'text': data.text[:950],
-        'files_to_del': files_to_del,
         'files': files,
         'info': data,
         'attachments_info': data.attachments_info
+    }
+
+
+async def send_weather_photo(dialog_manager: DialogManager, **kwargs):
+    media = MediaAttachment(
+        path=f"{root_path}/pic_edit/2.jpg",
+        type=ContentType.PHOTO)
+    return {
+        'weather_photo': media
     }

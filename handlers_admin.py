@@ -7,9 +7,12 @@ from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, W
     CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog.widgets.input import MessageInput
 
 from bot import bot
-from dialog_premoderate.states_premod import PreModerateStates
+from dialog_premoderate.dialog_main_premod import admin_main_menu, admin_post_manager, admin_yandex_weather, \
+    admin_marketing
+from dialog_premoderate.states_premod import PreModerateStates, AdminMainMenu
 from dialog_vacansy.states import Vacancies
 from fsm import ListenUser, ListenAdmin
 from keyboards_admin import main_admin
@@ -22,10 +25,16 @@ from pic_edit.picture_edit import create_weather
 from test_dialog import Medias
 
 admin_ = Router()
+admin_.include_routers(
+    admin_main_menu,
+    admin_post_manager,
+    admin_yandex_weather,
+    admin_marketing
+)
 
 
-async def start(m: Message):
-    await m.answer('Admin Mode', reply_markup=main_admin)
+async def start(m: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
 
 
 async def upload_pic(m: Message):
@@ -46,8 +55,8 @@ async def get_weather(m: Message, state=FSMContext):
     await m.delete()
 
 
-async def edit_pic(m: Message, state=FSMContext):
-    await m.bot.download(file=m.photo[-1].file_id, destination=f"{root_path}/pic_edit/1.jpg")
+async def weather_handler(m: Message, message_input: MessageInput, manager: DialogManager):
+    await m.bot.download(file=manager.dialog_data['photo'].photo[-1].file_id, destination=f"{root_path}/pic_edit/1.jpg")
     await asyncio.sleep(1)
     await m.delete()
     result = create_weather()
@@ -109,11 +118,11 @@ async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
     admin_.message.register(posts_dialogs, F.text == 'Менеджер Постов')
-    admin_.callback_query.register(weather_answer, F.data.in_({'send_weather', 'cancel'}),
-                                   ListenAdmin.get_weather_screen)
-    admin_.message.register(get_weather, F.text == "Прислать скриншот яндекс погоды")
-    admin_.message.register(edit_pic, F.photo, ListenAdmin.get_weather_screen)
-    admin_.message.register(upload_pic, F.photo)
-    admin_.message.register(show_guests, F.text == "Последние гости БОТА")
-    admin_.message.register(send_dobrotsen_marketing, F.text == 'Запостить рекламу доброцен')
-    admin_.message.register(send_work_marketing, F.text == 'Запостить работу')
+    # admin_.callback_query.register(weather_answer, F.data.in_({'send_weather', 'cancel'}),
+    #                                ListenAdmin.get_weather_screen)
+    # admin_.message.register(get_weather, F.text == "Прислать скриншот яндекс погоды")
+    # admin_.message.register(edit_pic, F.photo, ListenAdmin.get_weather_screen)
+    # admin_.message.register(upload_pic, F.photo)
+    # admin_.message.register(show_guests, F.text == "Последние гости БОТА")
+    # admin_.message.register(send_dobrotsen_marketing, F.text == 'Запостить рекламу доброцен')
+    # admin_.message.register(send_work_marketing, F.text == 'Запостить работу')
