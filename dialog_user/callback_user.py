@@ -1,13 +1,17 @@
 import asyncio
 from typing import Any
 
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, Message
 from aiogram_dialog import DialogManager, StartMode, ShowMode
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
-from bot import bot
-from dialog_user.state_user import Vacancies
-from keyboards_user import work_kb
+from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState
+
+
+async def start(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.done()
+    await dialog_manager.start(UserMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def select_vac(c: CallbackQuery, widget: Any, dialog_manager: DialogManager, vac_id: str):
@@ -17,12 +21,22 @@ async def select_vac(c: CallbackQuery, widget: Any, dialog_manager: DialogManage
 
 async def dialog_close(c: CallbackQuery, widget: Any, dialog_manager: DialogManager):
     await dialog_manager.done()
-    await bot.send_photo(chat_id=c.from_user.id,
-                         photo='AgACAgIAAxkBAAIzn2ZAikXxLIHIgEjP6CJ905PAUfFmAAI62zEba4MAAUrp7N-ctS2YAgEAAwIAA3kAAzUE',
-                         caption='Найди работу в Ленинском районе',
-                         reply_markup=work_kb.as_markup()
-                         )
+    await dialog_manager.start(UserMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def vacancies_list(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     await dialog_manager.start(Vacancies.vac_list, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
+
+
+async def phone_search_click(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.start(SearchPhoneState.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
+
+
+async def get_phone_txt(
+        message: Message,
+        widget: MessageInput,
+        dialog_manager: DialogManager,
+):
+    await message.delete()
+    dialog_manager.dialog_data["phone_txt"] = message.text
+    await dialog_manager.switch_to(SearchPhoneState.get_phone_number, show_mode=ShowMode.DELETE_AND_SEND)

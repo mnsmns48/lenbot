@@ -1,13 +1,17 @@
 from operator import attrgetter
 
+from aiogram import F
+from aiogram.enums import ContentType
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.kbd import Back, ScrollingGroup, Select, Column, Url, Button, WebApp
+from aiogram_dialog.widgets.input import TextInput, MessageInput
+from aiogram_dialog.widgets.kbd import Back, ScrollingGroup, Select, Column, Url, Button, WebApp, Next
 from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Const, Format, Multi
 
-from dialog_user.callback_user import select_vac, dialog_close, vacancies_list
-from dialog_user.getter_user import vacancies_list_getter, vac_info_getter, get_main_getter
-from dialog_user.state_user import Vacancies, UserMainMenu
+from dialog_user.callback_user import select_vac, dialog_close, vacancies_list, phone_search_click, get_phone_txt, start
+from dialog_user.getter_user import vacancies_list_getter, vac_info_getter, get_main_getter, search_byphone_getter, \
+    get_number
+from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState
 
 
 def vacancies_window_list(**kwargs):
@@ -67,7 +71,7 @@ def user_main_menu_window(**kwargs):
                    on_click=vacancies_list),
             Button(text=Format('Поиск по номеру телефона'),
                    id='search_by_phone_btn',
-                   on_click=None),
+                   on_click=phone_search_click),
             WebApp(text=Const('Магазин Доброцен'), url=Const('https://1385988-ci25991.tw1.ru')),
             Button(text=Format('Отправить сообщение Администратору'),
                    id='Admin_message_btn',
@@ -75,4 +79,31 @@ def user_main_menu_window(**kwargs):
         ),
         state=UserMainMenu.start,
         getter=get_main_getter,
+    )
+
+
+def search_byphone_window():
+    return Window(
+        DynamicMedia('search_phone_pic'),
+        Format('Введите номер телефона 10 цифр: +7.......начиная с 9-ки\nОжидаю.....'),
+        MessageInput(content_types=[ContentType.TEXT], func=get_phone_txt),
+        getter=search_byphone_getter,
+        state=SearchPhoneState.start,
+    )
+
+
+def get_phone_window():
+    return Window(
+        Format('{message}'),
+        Format('{phones}', when=F['phones']),
+        Button(text=Format('Пробуем ещё'),
+               id='elif_btn',
+               on_click=phone_search_click),
+        Button(text=Format('Главное меню'),
+               id='main_menu_btn',
+               on_click=start),
+        getter=get_number,
+        state=SearchPhoneState.get_phone_number,
+        disable_web_page_preview=True,
+        parse_mode='HTML'
     )

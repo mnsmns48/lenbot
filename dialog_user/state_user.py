@@ -16,3 +16,9 @@ class ListenUser(StatesGroup):
 
 class UserMainMenu(StatesGroup):
     start = State()
+
+
+class SearchPhoneState(StatesGroup):
+    start = State()
+    get_phone_number = State()
+

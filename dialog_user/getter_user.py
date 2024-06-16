@@ -1,12 +1,15 @@
+import re
 from datetime import datetime
+from itertools import groupby
 
 from aiogram.enums import ContentType
 from aiogram_dialog import DialogManager
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
-from sqlalchemy import select
+from sqlalchemy import select, Result
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import engine
-from models import LeninoWork
+from models import LeninoWork, Posts
 
 
 async def vacancies_list_getter(**kwargs):
@@ -36,4 +39,40 @@ async def get_main_getter(**kwargs):
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         'main_photo': image
+    }
+
+
+async def search_byphone_getter(**kwargs):
+    image_id = "AgACAgIAAxkBAAIFOmZuwmG0nHBNAAED4PwuJ8NAkAZvNgAC3tgxGyEueUtYUnyHMSkpJwEAAwIAA3gAAzUE"
+    image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
+
+    return {
+        'search_phone_pic': image
+    }
+
+
+async def get_number(dialog_manager: DialogManager, session: AsyncSession, **kwargs):
+    p_number = dialog_manager.dialog_data.get('phone_txt')
+    regex = re.search(r'\d{10}', p_number)
+    if regex:
+        query = select(Posts.phone_number, Posts.signer_name, Posts.signer_id).filter(
+            Posts.phone_number == int(f"7{p_number}"))
+        r: Result = await session.execute(query)
+        result = r.fetchall()
+        if result:
+            new_x = [el for el, _ in groupby(result)]
+            output_str = str()
+            for line in new_x:
+                if line[1] == 'Анонимно':
+                    return {'message': 'Нет такого номера базе'}
+                output_str += ''.join(f"+{line[0]} ссылка ➡️ <a href='https://vk.com/id{line[2]}'>{line[1]}</a>") + '\n'
+                return {
+                    'message': 'Надено:\n',
+                    'phones': output_str
+                }
+        return {
+            'message': 'Номер не найден',
+        }
+    return {
+        'message': 'Неверный формат номера',
     }

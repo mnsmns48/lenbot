@@ -8,7 +8,8 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram_dialog import DialogManager, StartMode, Dialog
 
 from dialog_user.state_user import Vacancies, ListenUser, UserMainMenu
-from dialog_user.window_user import vacancies_window_list, vacancies_window_info, user_main_menu_window
+from dialog_user.window_user import vacancies_window_list, vacancies_window_info, user_main_menu_window, \
+    search_byphone_window, get_phone_window
 from middleware import MediaGroupMiddleware
 from func import write_user, get_info_by_phone
 from bot import bot
@@ -19,8 +20,9 @@ user_ = Router()
 
 vacancies = Dialog(vacancies_window_list(), vacancies_window_info())
 main_menu_dialog = Dialog(user_main_menu_window())
+search_byphone_ = Dialog(search_byphone_window(), get_phone_window())
 
-user_.include_routers(vacancies, main_menu_dialog)
+user_.include_routers(vacancies, main_menu_dialog, search_byphone_)
 
 user_.message.middleware(MediaGroupMiddleware())
 

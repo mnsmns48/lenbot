@@ -119,7 +119,7 @@ def marketing_window(**kwargs):
             Button(Const("Реклама Доброцен"),
                    id="dobrotsen_btn",
                    on_click=send_dobrotsen),
-            Button(Const("Отправить вакансии"),
+            Button(Const("Реклама вакансий"),
                    id="leninowork_btn",
                    on_click=send_lenino_work)
         ),
