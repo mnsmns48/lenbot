@@ -3,15 +3,16 @@ from operator import attrgetter
 from aiogram import F
 from aiogram.enums import ContentType
 from aiogram_dialog import Window
-from aiogram_dialog.widgets.input import TextInput, MessageInput
+from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Back, ScrollingGroup, Select, Column, Url, Button, WebApp, Next
 from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Const, Format, Multi
 
-from dialog_user.callback_user import select_vac, dialog_close, vacancies_list, phone_search_click, get_phone_txt, start
+from dialog_user.callback_user import select_vac, dialog_close, vacancies_list, phone_search_click, get_phone_txt, \
+    start, contact_administrator_click, get_admin_message
 from dialog_user.getter_user import vacancies_list_getter, vac_info_getter, get_main_getter, search_byphone_getter, \
-    get_number
-from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState
+    get_number, contact_admin_getter
+from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState, ListenUser
 
 
 def vacancies_window_list(**kwargs):
@@ -73,9 +74,9 @@ def user_main_menu_window(**kwargs):
                    id='search_by_phone_btn',
                    on_click=phone_search_click),
             WebApp(text=Const('Магазин Доброцен'), url=Const('https://1385988-ci25991.tw1.ru')),
-            Button(text=Format('Отправить сообщение Администратору'),
+            Button(text=Format('Отправить сообщение администратору'),
                    id='Admin_message_btn',
-                   on_click=None),
+                   on_click=contact_administrator_click),
         ),
         state=UserMainMenu.start,
         getter=get_main_getter,
@@ -106,4 +107,14 @@ def get_phone_window():
         state=SearchPhoneState.get_phone_number,
         disable_web_page_preview=True,
         parse_mode='HTML'
+    )
+
+
+def contact_administrator_window():
+    return Window(
+        DynamicMedia('contact_admin'),
+        Const('Админ слушает, принимает к сведению, но не отвечает\nПишите...'),
+        MessageInput(content_types=[ContentType.TEXT], func=get_admin_message),
+        state=ListenUser.to_admin_,
+        getter=contact_admin_getter
     )

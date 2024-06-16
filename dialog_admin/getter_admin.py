@@ -93,3 +93,6 @@ async def get_guests_getter(dialog_manager: DialogManager, session: AsyncSession
     return {
         'guests': my_row
     }
+
+
+

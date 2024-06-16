@@ -76,3 +76,11 @@ async def get_number(dialog_manager: DialogManager, session: AsyncSession, **kwa
     return {
         'message': 'Неверный формат номера',
     }
+
+
+async def contact_admin_getter(**kwargs):
+    image_id = "AgACAgIAAxkBAAIGBWZu2g5-1t4M8O0WHkg74RYKGhqKAAJF2TEbIS55Sy_bQvftoYTxAQADAgADeQADNQQ"
+    image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
+    return {
+        'contact_admin': image
+    }
