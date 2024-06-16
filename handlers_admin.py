@@ -10,10 +10,10 @@ from aiogram_dialog import DialogManager, StartMode
 from aiogram_dialog.widgets.input import MessageInput
 
 from bot import bot
-from dialog_premoderate.dialog_main_premod import admin_main_menu, admin_post_manager, admin_yandex_weather, \
+from dialog_admin.dialog_main_premod import admin_main_menu, admin_post_manager, admin_yandex_weather, \
     admin_marketing
-from dialog_premoderate.states_premod import PreModerateStates, AdminMainMenu
-from dialog_vacansy.states import Vacancies
+from dialog_admin.states_premod import PreModerateStates, AdminMainMenu
+from dialog_user.states import Vacancies
 from fsm import ListenUser, ListenAdmin
 from keyboards_admin import main_admin
 from func import last_guests, get_info_by_phone
@@ -22,7 +22,6 @@ from config import engine, hv, root_path
 from filter import AdminFilter
 from keyboards_user import dobrotsen_kb, work_kb
 from pic_edit.picture_edit import create_weather
-from test_dialog import Medias
 
 admin_ = Router()
 admin_.include_routers(
@@ -117,7 +116,7 @@ async def posts_dialogs(m: Message, dialog_manager: DialogManager):
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
-    admin_.message.register(posts_dialogs, F.text == 'Менеджер Постов')
+    # admin_.message.register(posts_dialogs, F.text == 'Менеджер Постов')
     # admin_.callback_query.register(weather_answer, F.data.in_({'send_weather', 'cancel'}),
     #                                ListenAdmin.get_weather_screen)
     # admin_.message.register(get_weather, F.text == "Прислать скриншот яндекс погоды")

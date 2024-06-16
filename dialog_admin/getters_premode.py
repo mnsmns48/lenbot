@@ -1,21 +1,17 @@
-import asyncio
 import json
-import os
-import re
+
 from dataclasses import dataclass
 from datetime import datetime
 
 from aiogram.enums import ContentType
 from aiogram_dialog import DialogManager
 from aiogram_dialog.api.entities import MediaAttachment, MediaId
-from aiogram_dialog.api.protocols import MediaIdStorageProtocol
-from aiogram_dialog.context.media_storage import MediaIdStorage
-from sqlalchemy import select, Row, Result
+from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from config import root_path
 from func import download_video
-from models import PreModData
+from models import PreModData, Visitors
 
 
 @dataclass
@@ -77,10 +73,23 @@ async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession,
     }
 
 
-async def send_weather_photo(dialog_manager: DialogManager, **kwargs):
+async def send_weather_photo(**kwargs):
     media = MediaAttachment(
         path=f"{root_path}/pic_edit/2.jpg",
         type=ContentType.PHOTO)
     return {
         'weather_photo': media
+    }
+
+
+async def get_guests_getter(dialog_manager: DialogManager, session: AsyncSession, **kwargs):
+    my_row = str()
+    query = select(Visitors.time, Visitors.tg_id, Visitors.tg_username, Visitors.tg_fullname).order_by(
+        Visitors.time.desc()).limit(15)
+    r: Result = await session.execute(query)
+    guests = r.all()
+    for line in guests:
+        my_row += ''.join([f'{line[0].strftime("%m-%d-%Y %H:%M")} {line[1]} {line[2]} {line[3]}\n'])
+    return {
+        'guests': my_row
     }

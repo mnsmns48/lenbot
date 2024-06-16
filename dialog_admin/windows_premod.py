@@ -2,20 +2,19 @@ from operator import attrgetter
 
 from aiogram import F
 from aiogram.enums import ContentType
-from aiogram.types import WebAppInfo
 
 from aiogram_dialog import Window
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Button, Column, Url, NumberedPager, Row, WebApp
 from aiogram_dialog.widgets.media import MediaScroll, DynamicMedia
-from aiogram_dialog.widgets.text import Const, Format, Multi, Text
+from aiogram_dialog.widgets.text import Const, Format, Multi
 
-from config import root_path
-from dialog_premoderate.callbacks_premode import dialog_close, select_post, start_list, clean_cashe_folder, \
+from dialog_admin.callbacks_premode import dialog_close, select_post, start_list, clean_cashe_folder, \
     posts_manager_click, yandex_weather_click, callback_weather_handler, send_weather_click, choose_marketing, \
-    send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click
-from dialog_premoderate.getters_premode import posts_list_getter, post_info_getter, send_weather_photo
-from dialog_premoderate.states_premod import PreModerateStates, AdminMainMenu, MarketingState
+    send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click, start_main_menu
+from dialog_admin.getters_premode import posts_list_getter, post_info_getter, send_weather_photo, \
+    get_guests_getter
+from dialog_admin.states_premod import PreModerateStates, AdminMainMenu, MarketingState
 from fsm import ListenAdmin
 
 
@@ -131,5 +130,10 @@ def marketing_window(**kwargs):
 
 def visitors(**kwargs):
     return Window(
-
+        Format('{guests}'),
+        Button(Const(" -- Выход -- "),
+               id="btn",
+               on_click=start_main_menu),
+        state=AdminMainMenu.visitors,
+        getter=get_guests_getter
     )

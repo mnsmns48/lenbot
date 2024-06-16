@@ -2,8 +2,8 @@ import asyncio
 import logging
 import sys
 
-from dialog_premoderate.dialog_main_premod import admin_main_menu, admin_post_manager
-from dialog_vacansy.dialogs import vacancies
+from dialog_admin.dialog_main_premod import admin_main_menu, admin_post_manager
+from dialog_user.dialogs import vacancies
 from handlers_admin import register_admin_handlers, admin_
 from bot import bot, dp
 from commands import commands

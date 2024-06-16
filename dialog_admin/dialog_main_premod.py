@@ -1,6 +1,6 @@
 from aiogram_dialog import Dialog
 
-from dialog_premoderate.windows_premod import pre_moderate_posts, info_window, start_admin_menu, yandex_weather_window, \
+from dialog_admin.windows_premod import pre_moderate_posts, info_window, start_admin_menu, yandex_weather_window, \
     send_weather, marketing_window, visitors
 
 admin_main_menu = Dialog(start_admin_menu(), visitors())

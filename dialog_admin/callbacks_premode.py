@@ -7,14 +7,11 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram_dialog import DialogManager, StartMode
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
-from sqlalchemy import select, Result
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot import bot
 from config import root_path, hv
-from dialog_premoderate.states_premod import PreModerateStates, AdminMainMenu, MarketingState
+from dialog_admin.states_premod import PreModerateStates, AdminMainMenu, MarketingState
 from fsm import ListenAdmin
-from models import Visitors
 from pic_edit.picture_edit import create_weather
 
 
@@ -87,7 +84,7 @@ async def send_dobrotsen(c: CallbackQuery, widget: Button, dialog_manager: Dialo
     kb.add(InlineKeyboardButton(text="Цены Доброцена", url="https://t.me/pgtlenino_bot"))
     await bot.send_photo(
         chat_id=hv.tg_chat_id,
-        photo='gACAgIAAxkBAAIxqGY3PMK0W54gK0l_Xyqe3OaeIpdCAAKR1jEbO1rASUiom6L0TtkgAQADAgADeAADNQQ',
+        photo='AgACAgIAAxkBAAIxqGY3PMK0W54gK0l_Xyqe3OaeIpdCAAKR1jEbO1rASUiom6L0TtkgAQADAgADeAADNQQ',
         disable_notification=hv.notification,
         reply_markup=kb.as_markup()
     )
@@ -108,7 +105,9 @@ async def send_lenino_work(c: CallbackQuery, widget: Button, dialog_manager: Dia
     await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
 
 
-async def get_guests_click(c: CallbackQuery, widget: Button, dialog_manager: DialogManager, session: AsyncSession):
-    query = select(Visitors).order_by(Visitors.time.desc()).limit(15)
-    r: Result = await session.execute(query)
-    guests = r.scalars
+async def get_guests_click(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.switch_to(AdminMainMenu.visitors)
+
+
+async def start_main_menu(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
