@@ -5,18 +5,28 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
-from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog import DialogManager, StartMode, Dialog
 
-from dialog_user.states import Vacancies
+from dialog_user.state_user import Vacancies, ListenUser, UserMainMenu
+from dialog_user.window_user import vacancies_window_list, vacancies_window_info, user_main_menu_window
 from middleware import MediaGroupMiddleware
 from func import write_user, get_info_by_phone
 from bot import bot
-from fsm import ListenUser
 from keyboards_user import main_kb, public, dobrotsen_kb, search_phone_kb, work_kb
 from config import hv, engine
 
 user_ = Router()
+
+vacancies = Dialog(vacancies_window_list(), vacancies_window_info())
+main_menu_dialog = Dialog(user_main_menu_window())
+
+user_.include_routers(vacancies, main_menu_dialog)
+
 user_.message.middleware(MediaGroupMiddleware())
+
+
+async def start(m: Message, dialog_manager: DialogManager):
+    await dialog_manager.start(UserMainMenu.start, mode=StartMode.RESET_STACK)
 
 
 def receive_attach(album: MediaGroupBuilder, m: Message) -> MediaGroupBuilder:
@@ -27,20 +37,21 @@ def receive_attach(album: MediaGroupBuilder, m: Message) -> MediaGroupBuilder:
     return album
 
 
-async def start(m: Message):
-    async with engine.scoped_session() as session:
-        await write_user(m, session)
-    await m.answer_photo(photo='AgACAgIAAxkBAAITZmQlo77a9vGGy1DlE30EBC652E9-AAIyxjEbbWMpSZgCRTKnxt4VAQADAgADeQADLwQ',
-                         caption='Этот бот принимает посты в телеграм канал @leninocremia',
-                         reply_markup=main_kb.as_markup())
-    await m.answer_photo(photo='AgACAgIAAxkBAAIs2mYQU2B8JEANJKgf8_qVirdNzZ66AALw3TEbFxCBSMq61FIW9Rb4AQADAgADeAADNAQ',
-                         reply_markup=dobrotsen_kb.as_markup())
-    await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
-                         caption='Узнать владельца номера телефона ↓ ↓ ↓',
-                         reply_markup=search_phone_kb.as_markup())
-    await m.answer_photo(photo='AgACAgIAAxkBAAIzrGZAjVsEs1tPgOAuzByAY3EAAWqykQACRNsxG2uDAAFKvziH6AABwdK8AQADAgADeQADNQQ',
-                         caption='Работа в Ленинском районе',
-                         reply_markup=work_kb.as_markup())
+# async def start(m: Message):
+#     async with engine.scoped_session() as session:
+#         await write_user(m, session)
+#     await m.answer_photo(photo='AgACAgIAAxkBAAITZmQlo77a9vGGy1DlE30EBC652E9-AAIyxjEbbWMpSZgCRTKnxt4VAQADAgADeQADLwQ',
+#                          caption='Этот бот принимает посты в телеграм канал @leninocremia',
+#                          reply_markup=main_kb.as_markup())
+#     await m.answer_photo(photo='AgACAgIAAxkBAAIs2mYQU2B8JEANJKgf8_qVirdNzZ66AALw3TEbFxCBSMq61FIW9Rb4AQADAgADeAADNAQ',
+#                          reply_markup=dobrotsen_kb.as_markup())
+#     await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
+#                          caption='Узнать владельца номера телефона ↓ ↓ ↓',
+#                          reply_markup=search_phone_kb.as_markup())
+#     await m.answer_photo(
+#         photo='AgACAgIAAxkBAAIzrGZAjVsEs1tPgOAuzByAY3EAAWqykQACRNsxG2uDAAFKvziH6AABwdK8AQADAgADeQADNQQ',
+#         caption='Работа в Ленинском районе',
+#         reply_markup=work_kb.as_markup())
 
 
 async def suggest_post_callback(c: CallbackQuery, state=FSMContext):
@@ -137,13 +148,13 @@ async def vacancies_dialogs(m: Message, dialog_manager: DialogManager):
 
 async def register_user_handlers():
     user_.message.register(start, CommandStart())
-    user_.message.register(show_phone_m, Command("search_phone"))
-    user_.callback_query.register(show_phone, F.data == 'search_phone')
-    user_.callback_query.register(vacancies_dialogs, F.data == 'vacancies')
-    user_.message.register(take_phone_numb, ListenUser.search_phone)
-    user_.callback_query.register(suggest_post_callback, F.data == 'suggest')
-    user_.callback_query.register(to_admin_callback, F.data == 'to_admin')
-    user_.message.register(to_admin, ListenUser.to_admin_)
-    user_.message.register(suggest_post, ListenUser.suggest_)
-    user_.callback_query.register(callback_handler_public, F.data == 'public')
-    user_.callback_query.register(callback_handler_again, F.data == 'again')
+    # user_.message.register(show_phone_m, Command("search_phone"))
+    # user_.callback_query.register(show_phone, F.data == 'search_phone')
+    # user_.callback_query.register(vacancies_dialogs, F.data == 'vacancies')
+    # user_.message.register(take_phone_numb, ListenUser.search_phone)
+    # user_.callback_query.register(suggest_post_callback, F.data == 'suggest')
+    # user_.callback_query.register(to_admin_callback, F.data == 'to_admin')
+    # user_.message.register(to_admin, ListenUser.to_admin_)
+    # user_.message.register(suggest_post, ListenUser.suggest_)
+    # user_.callback_query.register(callback_handler_public, F.data == 'public')
+    # user_.callback_query.register(callback_handler_again, F.data == 'again')

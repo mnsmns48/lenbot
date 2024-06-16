@@ -2,12 +2,10 @@ import asyncio
 from typing import Union, Callable, Any, Awaitable, Dict
 
 from aiogram import BaseMiddleware
-from aiogram.types import Message, TelegramObject, Update
-from sqlalchemy.ext.asyncio import async_sessionmaker
+from aiogram.types import Message, Update
 
 from bot import dp
 from config import engine
-from handlers_admin import admin_
 
 
 class MediaGroupMiddleware(BaseMiddleware):

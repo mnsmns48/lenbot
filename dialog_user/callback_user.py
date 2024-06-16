@@ -2,10 +2,11 @@ import asyncio
 from typing import Any
 
 from aiogram.types import CallbackQuery
-from aiogram_dialog import DialogManager
+from aiogram_dialog import DialogManager, StartMode, ShowMode
+from aiogram_dialog.widgets.kbd import Button
 
 from bot import bot
-from dialog_user.states import Vacancies
+from dialog_user.state_user import Vacancies
 from keyboards_user import work_kb
 
 
@@ -21,3 +22,7 @@ async def dialog_close(c: CallbackQuery, widget: Any, dialog_manager: DialogMana
                          caption='Найди работу в Ленинском районе',
                          reply_markup=work_kb.as_markup()
                          )
+
+
+async def vacancies_list(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.start(Vacancies.vac_list, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)

@@ -1,6 +1,8 @@
 from datetime import datetime
 
+from aiogram.enums import ContentType
 from aiogram_dialog import DialogManager
+from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from sqlalchemy import select
 
 from config import engine
@@ -26,4 +28,12 @@ async def vac_info_getter(dialog_manager: DialogManager, **kwargs):
     return {
         'info': data,
         'date': datetime.strftime(data.updated_at, "%d.%m.%Y %H:%M"),
+    }
+
+
+async def get_main_getter(**kwargs):
+    image_id = "AgACAgIAAxkBAAIEgmZuq2KapQqrZ5USM6yMCPwVewABewACY9gxGyEueUsoKfVgZqpy8gEAAwIAA3kAAzUE"
+    image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
+    return {
+        'main_photo': image
     }

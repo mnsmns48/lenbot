@@ -9,13 +9,12 @@ from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Button, Column, U
 from aiogram_dialog.widgets.media import MediaScroll, DynamicMedia
 from aiogram_dialog.widgets.text import Const, Format, Multi
 
-from dialog_admin.callbacks_premode import dialog_close, select_post, start_list, clean_cashe_folder, \
+from dialog_admin.callback_admin import dialog_close, select_post, start_list, clean_cashe_folder, \
     posts_manager_click, yandex_weather_click, callback_weather_handler, send_weather_click, choose_marketing, \
     send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click, start_main_menu
-from dialog_admin.getters_premode import posts_list_getter, post_info_getter, send_weather_photo, \
+from dialog_admin.getter_admin import posts_list_getter, post_info_getter, send_weather_photo, \
     get_guests_getter
-from dialog_admin.states_premod import PreModerateStates, AdminMainMenu, MarketingState
-from fsm import ListenAdmin
+from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin
 
 
 def start_admin_menu(**kwargs):
@@ -43,7 +42,7 @@ def start_admin_menu(**kwargs):
 
 def yandex_weather_window(**kwargs):
     return Window(
-        Format("Жду скриншот"),
+        Const("Жду скриншот"),
         MessageInput(callback_weather_handler, content_types=[ContentType.PHOTO]),
         state=ListenAdmin.get_weather_screen,
     )
@@ -61,7 +60,7 @@ def send_weather(**kwargs):
     )
 
 
-def pre_moderate_posts(**kwargs):
+def pre_moderate_posts_list(**kwargs):
     return Window(
         Const("Новые посты"),
         ScrollingGroup(

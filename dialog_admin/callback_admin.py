@@ -4,14 +4,13 @@ from typing import Any
 
 from aiogram.types import CallbackQuery, Message, FSInputFile, InlineKeyboardButton
 from aiogram.utils.keyboard import InlineKeyboardBuilder
-from aiogram_dialog import DialogManager, StartMode
+from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
 from bot import bot
 from config import root_path, hv
-from dialog_admin.states_premod import PreModerateStates, AdminMainMenu, MarketingState
-from fsm import ListenAdmin
+from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin
 from pic_edit.picture_edit import create_weather
 
 
@@ -52,7 +51,7 @@ async def posts_manager_click(c: CallbackQuery, widget: Button,
 async def yandex_weather_click(c: CallbackQuery, widget: Button,
                                dialog_manager: DialogManager):
     await c.answer('Жду скриншот погоды')
-    await dialog_manager.start(ListenAdmin.get_weather_screen)
+    await dialog_manager.start(ListenAdmin.get_weather_screen, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def callback_weather_handler(m: Message, message_input: MessageInput, dialog_manager: DialogManager):
@@ -60,23 +59,24 @@ async def callback_weather_handler(m: Message, message_input: MessageInput, dial
     await asyncio.sleep(1)
     await m.delete()
     create_weather()
-    await dialog_manager.start(ListenAdmin.send_weather)
+    await dialog_manager.switch_to(ListenAdmin.send_weather, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def send_weather_click(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     await bot.send_photo(chat_id=hv.tg_chat_id,
                          photo=FSInputFile(f"{root_path}/pic_edit/2.jpg"),
                          disable_notification=hv.notification)
+    await c.answer('Выхожу')
     await dialog_manager.done()
-    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
 
 
 async def weather_cancel(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
-    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
+    await c.answer('Выхожу')
+    await dialog_manager.done()
 
 
 async def choose_marketing(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
-    await dialog_manager.start(MarketingState.start, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(MarketingState.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def send_dobrotsen(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
@@ -89,7 +89,7 @@ async def send_dobrotsen(c: CallbackQuery, widget: Button, dialog_manager: Dialo
         reply_markup=kb.as_markup()
     )
     await dialog_manager.done()
-    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def send_lenino_work(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
@@ -102,7 +102,7 @@ async def send_lenino_work(c: CallbackQuery, widget: Button, dialog_manager: Dia
         reply_markup=kb.as_markup()
     )
     await dialog_manager.done()
-    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def get_guests_click(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
@@ -110,4 +110,4 @@ async def get_guests_click(c: CallbackQuery, widget: Button, dialog_manager: Dia
 
 
 async def start_main_menu(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
-    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)

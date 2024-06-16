@@ -14,3 +14,8 @@ class PreModerateStates(StatesGroup):
 
 class MarketingState(StatesGroup):
     start = State()
+
+
+class ListenAdmin(StatesGroup):
+    get_weather_screen = State()
+    send_weather = State()
