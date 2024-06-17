@@ -79,9 +79,13 @@ def pre_moderate_posts_list(**kwargs):
         # Button(Const("Очистить кэш"),
         #        id="clean_cash_btn",
         #        on_click=clean_cashe_folder),
-        Button(Const(" -- Выход -- "),
-               id="btn",
-               on_click=dialog_close),
+        Button(Const("Обновить посты"),
+               id="refresh_posts_btn",
+               on_click=start_list),
+        Button(Const(" << -- Выход -- >>"),
+               id="exit_btn",
+               on_click=start_main_menu),
+
         state=PreModerateStates.post_list,
         getter=posts_list_getter
     )

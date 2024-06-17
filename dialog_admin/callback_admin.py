@@ -132,4 +132,7 @@ async def get_guests_click(c: CallbackQuery, widget: Button, dialog_manager: Dia
 
 
 async def start_main_menu(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.done()
     await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
+
+
