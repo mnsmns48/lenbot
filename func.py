@@ -76,8 +76,6 @@ async def download_video(video: str, format_quality: list) -> str | None:
         with YoutubeDL(ydl_opts) as ydl:
             formats = list()
             pre_res = ydl.extract_info(video, download=False)
-            for k, v in pre_res.items():
-                print(f"{k}: {v}")
             [formats.append(format_) for format_ in pre_res.get('formats') if format_.get('height')]
             formats.sort(key=itemgetter('height'))
             for format_ in formats:
