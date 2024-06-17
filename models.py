@@ -78,3 +78,4 @@ class BadPosts(Base):
     url: Mapped[str]
     source: Mapped[str]
     internal_id: Mapped[int] = mapped_column(BIGINT, primary_key=True)
+    source_id: Mapped[int] = mapped_column(BIGINT, primary_key=True)

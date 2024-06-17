@@ -39,7 +39,7 @@ async def start_list(c: CallbackQuery, widget: Any,
 async def on_delete(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     del_id = dialog_manager.dialog_data['internal_id']
     for_add = dialog_manager.dialog_data['full_post_info']
-    data = [for_add.date, for_add.url, for_add.source, for_add.internal_id]
+    data = [for_add.date, for_add.url, for_add.source, for_add.internal_id, for_add.source_id]
     async with engine.scoped_session() as session:
         await write_data(session=session, table=BadPosts, data=data)
         await delete_data(session=session, table=PreModData, column=PreModData.internal_id, data_id=del_id)
