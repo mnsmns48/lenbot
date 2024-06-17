@@ -1,15 +1,25 @@
+import asyncio
+import json
+import os
 import re
+import time
 from itertools import groupby
 from operator import itemgetter
 import random
 
-from aiogram.types import Message
-from sqlalchemy import insert, Sequence, select, Result
+from aiogram.types import Message, URLInputFile, FSInputFile
+from aiogram.utils.media_group import MediaGroupBuilder
+from sqlalchemy import Sequence, select, Result
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config import engine
-from models import Visitors, Posts
+from bot import bot
+from config import engine, hv, root_path
+from crud import write_data, delete_data
+from models import Visitors, Posts, PreModData
 from yt_dlp import YoutubeDL, DownloadError
+
+from text_edit import replacer
 
 
 async def write_user(m: Message, session: AsyncSession):
@@ -56,9 +66,9 @@ async def get_info_by_phone(m: Message):
 
 
 async def download_video(video: str, format_quality: list) -> str | None:
-    name = random.randint(1, 10000)
+    name = random.randint(1, 100000)
     ydl_opts = {'outtmpl': f'attachments/{name}.mp4',
-                'ffmpeg-location': 'ffmpeg',
+                'ffmpeg-location': '/usr/bin/ffmpeg',
                 'ignore-errors': True,
                 }
     try:
@@ -77,3 +87,73 @@ async def download_video(video: str, format_quality: list) -> str | None:
         return title
     except DownloadError:
         print('DownloadError')
+
+
+async def post_to_telegram(post: PreModData):
+    media_group = MediaGroupBuilder()
+    caption = await replacer(text=post.text)
+    if post.is_repost:
+        repost_place = 'public' if post.repost_source_id < 0 else 'id'
+        repost = f"<b> → → → → Р Е П О С Т ↓ ↓ ↓ ↓</b>\n" \
+                 f"<a href='https://vk.com/{repost_place}{abs(post.repost_source_id)}'>{post.repost_source_title}</a>\n"
+        caption = repost + caption
+    caption = f"{caption}\n<a href='https://vk.com/id{post.signer_id}'>" \
+              f"   👉  {post.signer_name}</a>" if post.signer_name != 'Анонимно' else f"{caption}"
+    if post.attachments_info:
+        attachments = json.loads(post.attachments)
+        for key, value in attachments.items():
+            if key == 'photo':
+                for photo in attachments.get(key):
+                    media_group.add_photo(media=URLInputFile(url=photo.get('big_size')))
+                    await asyncio.sleep(0.5)
+            if key == 'video':
+                for video in attachments.get(key):
+                    video_title = await download_video(video=video, format_quality=[426, 480, 720, 852])
+                    media_group.add_video(
+                        media=FSInputFile(path=f"{root_path}/{video_title}"),
+                        supports_streaming=True,
+                    )
+                    os.remove(f"{root_path}/{video_title}")
+        if len(caption) < 950:
+            media_group.caption = caption
+            await bot.send_media_group(chat_id=hv.tg_chat_id,
+                                       media=media_group.build(),
+                                       disable_notification=hv.notification,
+                                       request_timeout=1000)
+        else:
+            await bot.send_media_group(chat_id=hv.tg_chat_id,
+                                       media=media_group.build(),
+                                       disable_notification=hv.notification,
+                                       request_timeout=1000)
+            await bot.send_message(chat_id=hv.tg_chat_id,
+                                   text=caption[:4096],
+                                   parse_mode='HTML',
+                                   disable_web_page_preview=True,
+                                   disable_notification=hv.notification)
+    else:
+        await bot.send_message(chat_id=hv.tg_chat_id,
+                               text=caption[:4096],
+                               parse_mode='HTML',
+                               disable_web_page_preview=True,
+                               disable_notification=hv.notification
+                               )
+
+    data_to_post = {
+        'post_id': post.internal_id,
+        'time': post.date,
+        'group_id': post.source_id,
+        'group_name': post.source_title,
+        'signer_id': post.signer_id,
+        'signer_name': post.signer_name,
+        'phone_number': post.phone_number,
+        'text': post.text,
+        'is_repost': post.is_repost,
+        'repost_source_id': post.repost_source_id,
+        'repost_source_name': post.repost_source_title,
+        'attachments': post.attachments_info,
+        'source': post.url,
+    }
+
+    async with engine.scoped_session() as session:
+        await write_data(session=session, table=Posts, data=data_to_post)
+        await delete_data(session=session, table=PreModData, column=PreModData.internal_id, data_id=post.internal_id)

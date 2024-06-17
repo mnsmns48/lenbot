@@ -17,22 +17,26 @@ from models import PreModData, Visitors
 @dataclass
 class PreModePostList:
     date: datetime
+    url: str
     internal_id: int
     source_title: str
     text: str
     attachments_info: str
 
 
-async def posts_list_getter(session: AsyncSession, **kwargs):
-    query = (select(PreModData.date,
-                    PreModData.internal_id,
-                    PreModData.source_title,
-                    PreModData.text,
-                    PreModData.attachments_info)
-             .order_by(PreModData.date.desc()))
+async def posts_list_getter(dialog_manager: DialogManager, session: AsyncSession, **kwargs):
+    query = (select(
+        PreModData.date,
+        PreModData.url,
+        PreModData.internal_id,
+        PreModData.source_title,
+        PreModData.text,
+        PreModData.attachments_info,
+    ).order_by(PreModData.date.desc()))
     r: Result = await session.execute(query)
     data = r.fetchall()
     result = [PreModePostList(line.date.strftime("%d %H:%M"),
+                              line.url,
                               line.internal_id,
                               line.source_title[:8],
                               line.text[:25],
@@ -47,6 +51,7 @@ async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession,
     query = select(PreModData).filter(PreModData.internal_id == internal_id)
     r = await session.execute(query)
     data = r.scalar()
+    dialog_manager.dialog_data['full_post_info'] = data
     files = list()
     attache = data.attachments
     if attache:
@@ -93,6 +98,3 @@ async def get_guests_getter(dialog_manager: DialogManager, session: AsyncSession
     return {
         'guests': my_row
     }
-
-
-

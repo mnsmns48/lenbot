@@ -4,9 +4,9 @@ import sys
 
 from aiogram.types import BotCommand
 
-from handlers_admin import register_admin_handlers, admin_, admin_main_menu, admin_post_manager
+from dialog_admin.handlers_admin import register_admin_handlers, admin_
 from bot import bot, dp
-from handlers_user import register_user_handlers, user_, vacancies
+from dialog_user.handlers_user import register_user_handlers, user_
 from config import engine
 
 from models import Base

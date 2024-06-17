@@ -9,28 +9,30 @@ from aiogram_dialog import DialogManager, StartMode, Dialog
 
 from dialog_user.state_user import Vacancies, ListenUser, UserMainMenu
 from dialog_user.window_user import vacancies_window_list, vacancies_window_info, user_main_menu_window, \
-    search_byphone_window, get_phone_window, contact_administrator_window
+    search_byphone_window, get_phone_window, contact_administrator_window  # suggest_post_window, accept_post_window
 from middleware import MediaGroupMiddleware
-from func import write_user, get_info_by_phone
+from func import get_info_by_phone
 from bot import bot
-from keyboards_user import main_kb, public, dobrotsen_kb, search_phone_kb, work_kb
-from config import hv, engine
+from keyboards_user import main_kb, public
+from config import hv
 
 user_ = Router()
+
+user_.message.middleware(MediaGroupMiddleware())
 
 vacancies = Dialog(vacancies_window_list(), vacancies_window_info())
 main_menu_dialog = Dialog(user_main_menu_window())
 search_byphone_ = Dialog(search_byphone_window(), get_phone_window())
 contact_admin_ = Dialog(contact_administrator_window())
+# suggest_post = Dialog(suggest_post_window(), accept_post_window())
 
 user_.include_routers(
     main_menu_dialog,
     vacancies,
     search_byphone_,
-    contact_admin_
+    contact_admin_,
+    # suggest_post
 )
-
-user_.message.middleware(MediaGroupMiddleware())
 
 
 async def start(m: Message, dialog_manager: DialogManager):

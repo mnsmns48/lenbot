@@ -2,22 +2,24 @@ from operator import attrgetter
 
 from aiogram import F
 from aiogram.enums import ContentType
+from aiogram.methods import CopyMessages
 from aiogram_dialog import Window
 from aiogram_dialog.widgets.input import MessageInput
-from aiogram_dialog.widgets.kbd import Back, ScrollingGroup, Select, Column, Url, Button, WebApp, Next
+from aiogram_dialog.widgets.kbd import Back, ScrollingGroup, Select, Column, Url, Button, WebApp
 from aiogram_dialog.widgets.media import DynamicMedia
 from aiogram_dialog.widgets.text import Const, Format, Multi
 
 from dialog_user.callback_user import select_vac, dialog_close, vacancies_list, phone_search_click, get_phone_txt, \
-    start, contact_administrator_click, get_admin_message
+    start, contact_administrator_click, get_admin_message, suggest_post_click  # get_post_from_user
 from dialog_user.getter_user import vacancies_list_getter, vac_info_getter, get_main_getter, search_byphone_getter, \
-    get_number, contact_admin_getter
-from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState, ListenUser
+    get_number, contact_admin_getter, suggest_post_getter
+from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState, ListenUser, SuggestPost
 
 
 def vacancies_window_list(**kwargs):
     return Window(
         Format("Вакансии обновлены\n"),
+        DynamicMedia('work_pic'),
         ScrollingGroup(
             Select(
                 Format(text="{item.title}"),
@@ -64,9 +66,12 @@ def user_main_menu_window(**kwargs):
         Const('Главное меню'),
         DynamicMedia('main_photo'),
         Column(
-            Button(text=Format('Предложить пост Ленино Главное Крым🏖'),
-                   id='suggest_post_btn',
-                   on_click=None),
+            # Button(text=Format('Предложить пост Ленино Главное Крым🏖'),
+            #        id='suggest_post_btn',
+            #        on_click=suggest_post_click),
+            Button(text=Format('Отправить сообщение администратору'),
+                   id='Admin_message_btn',
+                   on_click=contact_administrator_click),
             Button(text=Format('Работа! Вакансии по Ленинскому району'),
                    id='vacancies_btn',
                    on_click=vacancies_list),
@@ -74,9 +79,6 @@ def user_main_menu_window(**kwargs):
                    id='search_by_phone_btn',
                    on_click=phone_search_click),
             WebApp(text=Const('Магазин Доброцен'), url=Const('https://1385988-ci25991.tw1.ru')),
-            Button(text=Format('Отправить сообщение администратору'),
-                   id='Admin_message_btn',
-                   on_click=contact_administrator_click),
         ),
         state=UserMainMenu.start,
         getter=get_main_getter,
@@ -118,3 +120,19 @@ def contact_administrator_window():
         state=ListenUser.to_admin_,
         getter=contact_admin_getter
     )
+
+# def suggest_post_window():
+#     return Window(
+#         DynamicMedia('suggest_posts'),
+#         Format('{text}'),
+#         MessageInput(content_types=[ContentType.ANY], func=get_post_from_user),
+#         state=SuggestPost.start,
+#         getter=suggest_post_getter
+#     )
+#
+#
+# def accept_post_window():
+#     return Window(
+#         Const('Получаю данные'),
+#         state=SuggestPost.get_data
+#     )

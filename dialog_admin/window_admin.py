@@ -11,7 +11,7 @@ from aiogram_dialog.widgets.text import Const, Format, Multi
 
 from dialog_admin.callback_admin import dialog_close, select_post, start_list, clean_cashe_folder, \
     posts_manager_click, yandex_weather_click, callback_weather_handler, send_weather_click, choose_marketing, \
-    send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click, start_main_menu
+    send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click, start_main_menu, on_delete, on_go_post
 from dialog_admin.getter_admin import posts_list_getter, post_info_getter, send_weather_photo, \
     get_guests_getter
 from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin
@@ -73,7 +73,7 @@ def pre_moderate_posts_list(**kwargs):
             ),
             id='main',
             width=1,
-            height=10,
+            height=12,
             hide_on_single_page=True
         ),
         Button(Const("Очистить кэш"),
@@ -104,9 +104,15 @@ def info_window(**kwargs):
             Format("{info.url}"), ),
         Url(Format("Автор {info.signer_name}"),
             Format("https://vk.com/id{info.signer_id}"), when=F['info.signer_id'] != 'Анонимно'),
+        Button(text=Format('Опубликовать'),
+               id='on_post_btn',
+               on_click=on_go_post),
         Button(text=Format('<< Назад к списку постов'),
                id='back_button',
                on_click=start_list),
+        Button(text=Format('Удалить'),
+               id='delete_btn',
+               on_click=on_delete),
         state=PreModerateStates.post_info,
         getter=post_info_getter
     )

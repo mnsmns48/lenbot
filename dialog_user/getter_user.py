@@ -17,8 +17,11 @@ async def vacancies_list_getter(**kwargs):
     async with engine.scoped_session() as session:
         r = await session.execute(query)
         data = r.fetchall()
+    image_id = "AgACAgIAAxkBAAIG7GZvNIoqdImHTV_8ZcZUwU_2SwABRAACIdoxGyEugUv658JZcLxmSQEAAwIAA3kAAzUE"
+    image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
-        "vacancies_list_": data
+        "vacancies_list_": data,
+        'work_pic': image
     }
 
 
@@ -83,4 +86,21 @@ async def contact_admin_getter(**kwargs):
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         'contact_admin': image
+    }
+
+
+async def suggest_post_getter(**kwargs):
+    image_id = "AgACAgIAAxkBAAIGjGZu9iacNYUY_9pBvR_pWZeIN9d_AAIi2jEbIS55S1hzEEFTwYUyAQADAgADeAADNQQ"
+    image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
+    text = ('Пиши текст, отправляй вложения\n\n'
+            'ВАЖНО!\n'
+            'Прислать нужно одним сообщением!\n\n'
+            'Если пост содержит фото и/или видеофайл, сначала добавьте эти файлы, '
+            'а текст прикрепите, как подпись к ним\n'
+            'Допускается до 10 медиафайлов\n\n'
+            'Не забудь указать контакт для связи, если это нужно\n\n'
+            'Жду пост....')
+    return {
+        'suggest_posts': image,
+        'text': text
     }

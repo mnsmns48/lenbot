@@ -71,3 +71,10 @@ class PreModData(Base):
     repost_source_title: Mapped[str | None]
     attachments_info: Mapped[str | None]
     attachments: Mapped[dict | None] = mapped_column(type_=JSON)
+
+
+class BadPosts(Base):
+    date: Mapped[DateTime] = mapped_column(DateTime(timezone=False))
+    url: Mapped[str]
+    source: Mapped[str]
+    internal_id: Mapped[int] = mapped_column(BIGINT, primary_key=True)

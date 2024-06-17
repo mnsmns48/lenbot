@@ -11,7 +11,7 @@ from config import engine
 class MediaGroupMiddleware(BaseMiddleware):
     album_data: dict = {}
 
-    def __init__(self, latency: Union[int, float] = 0.01):
+    def __init__(self, latency: Union[int, float] = 0.05):
         self.latency = latency
 
     async def __call__(

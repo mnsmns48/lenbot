@@ -6,7 +6,6 @@ from aiogram_dialog import DialogManager, StartMode, Dialog
 from dialog_admin.state_admin import AdminMainMenu
 from dialog_admin.window_admin import start_admin_menu, visitors, pre_moderate_posts_list, info_window, \
     yandex_weather_window, send_weather, marketing_window
-from dialog_user.state_user import UserMainMenu
 
 from filter import AdminFilter
 
@@ -25,7 +24,7 @@ admin_.include_routers(
 
 
 async def start(m: Message, dialog_manager: DialogManager):
-    await dialog_manager.start(UserMainMenu.start, mode=StartMode.RESET_STACK)
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
 
 
 async def upload_pic(m: Message):
@@ -37,4 +36,4 @@ async def upload_pic(m: Message):
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
-    admin_.message.register(upload_pic, F.photo) #AdminMainMenu.start)
+    # admin_.message.register(upload_pic, F.photo)

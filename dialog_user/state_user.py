@@ -8,10 +8,13 @@ class Vacancies(StatesGroup):
 
 
 class ListenUser(StatesGroup):
-    suggest_ = State()
-    to_public_ = State()
     to_admin_ = State()
     # search_phone = State()
+
+
+class SuggestPost(StatesGroup):
+    start = State()
+    get_data = State()
 
 
 class UserMainMenu(StatesGroup):
@@ -21,4 +24,3 @@ class UserMainMenu(StatesGroup):
 class SearchPhoneState(StatesGroup):
     start = State()
     get_phone_number = State()
-
