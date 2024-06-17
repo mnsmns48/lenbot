@@ -76,9 +76,9 @@ def pre_moderate_posts_list(**kwargs):
             height=12,
             hide_on_single_page=True
         ),
-        Button(Const("Очистить кэш"),
-               id="clean_cash_btn",
-               on_click=clean_cashe_folder),
+        # Button(Const("Очистить кэш"),
+        #        id="clean_cash_btn",
+        #        on_click=clean_cashe_folder),
         Button(Const(" -- Выход -- "),
                id="btn",
                on_click=dialog_close),
@@ -92,7 +92,8 @@ def info_window(**kwargs):
         Multi(
             Format(text="Вложения: {attachments_info}", when=F['attachments_info']),
             Format("{date} {info.source} {info.source_title} "),
-            Format("{text}"), when=F['text']),
+            Format("{text}", when=F['text']),
+            Format('{videos}'), when=F['videos']),
         MediaScroll(
             DynamicMedia(selector='item'),
             id='media_scroll',

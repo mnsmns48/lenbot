@@ -47,6 +47,7 @@ async def on_delete(c: CallbackQuery, widget: Button, dialog_manager: DialogMana
 
 
 async def on_go_post(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.answer_callback()
     await post_to_telegram(post=dialog_manager.dialog_data['full_post_info'])
     await dialog_manager.start(PreModerateStates.post_list, mode=StartMode.RESET_STACK,
                                show_mode=ShowMode.DELETE_AND_SEND)

@@ -75,6 +75,8 @@ async def download_video(video: str, format_quality: list) -> str | None:
         with YoutubeDL(ydl_opts) as ydl:
             formats = list()
             pre_res = ydl.extract_info(video, download=False)
+            for k, v in pre_res.items():
+                print(f"{k}: {v}")
             [formats.append(format_) for format_ in pre_res.get('formats') if format_.get('height')]
             formats.sort(key=itemgetter('height'))
             for format_ in formats:
@@ -104,39 +106,51 @@ async def post_to_telegram(post: PreModData):
         for key, value in attachments.items():
             if key == 'photo':
                 for photo in attachments.get(key):
-                    media_group.add_photo(media=URLInputFile(url=photo.get('big_size')))
+                    media_group.add_photo(media=URLInputFile(url=photo.get('big_size')), parse_mode='HTML', )
                     await asyncio.sleep(0.5)
             if key == 'video':
                 for video in attachments.get(key):
                     video_title = await download_video(video=video, format_quality=[426, 480, 720, 852])
-                    media_group.add_video(
-                        media=FSInputFile(path=f"{root_path}/{video_title}"),
-                        supports_streaming=True,
-                    )
-                    os.remove(f"{root_path}/{video_title}")
+                    if video_title:
+                        if os.path.getsize(f"{root_path}/{video_title}") < 50000000:
+                            media_group.add_video(
+                                media=FSInputFile(path=f"{root_path}/{video_title}"),
+                                parse_mode='HTML',
+                                supports_streaming=True,
+                            )
+            if key == 'doc':
+                for k, v in attachments.get(key).items():
+                    if k == 'link':
+                        media_group.add_document(media=URLInputFile(v))
+                        await asyncio.sleep(0.5)
+
         if len(caption) < 950:
             media_group.caption = caption
-            await bot.send_media_group(chat_id=hv.tg_chat_id,
-                                       media=media_group.build(),
-                                       disable_notification=hv.notification,
-                                       request_timeout=1000)
+            answer = await bot.send_media_group(chat_id=hv.tg_chat_id,
+                                                media=media_group.build(),
+                                                disable_notification=hv.notification,
+                                                request_timeout=1000)
         else:
-            await bot.send_media_group(chat_id=hv.tg_chat_id,
-                                       media=media_group.build(),
-                                       disable_notification=hv.notification,
-                                       request_timeout=1000)
-            await bot.send_message(chat_id=hv.tg_chat_id,
-                                   text=caption[:4096],
-                                   parse_mode='HTML',
-                                   disable_web_page_preview=True,
-                                   disable_notification=hv.notification)
+            answer = await bot.send_media_group(chat_id=hv.tg_chat_id,
+                                                media=media_group.build(),
+                                                disable_notification=hv.notification,
+                                                request_timeout=1000)
+            answer = await bot.send_message(chat_id=hv.tg_chat_id,
+                                            text=caption[:4096],
+                                            parse_mode='HTML',
+                                            disable_web_page_preview=True,
+                                            disable_notification=hv.notification)
     else:
-        await bot.send_message(chat_id=hv.tg_chat_id,
-                               text=caption[:4096],
-                               parse_mode='HTML',
-                               disable_web_page_preview=True,
-                               disable_notification=hv.notification
-                               )
+        answer = await bot.send_message(chat_id=hv.tg_chat_id,
+                                        text=caption[:4096],
+                                        parse_mode='HTML',
+                                        disable_web_page_preview=True,
+                                        disable_notification=hv.notification
+                                        )
+    if answer:
+        for filename in os.listdir(f"{root_path}/attachments/"):
+            file_path = os.path.join(f"{root_path}/attachments/", filename)
+            os.remove(file_path)
 
     data_to_post = {
         'post_id': post.internal_id,

@@ -47,6 +47,7 @@ async def posts_list_getter(dialog_manager: DialogManager, session: AsyncSession
 
 
 async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession, **kwargs):
+    video_links = list()
     internal_id = dialog_manager.dialog_data.get('internal_id')
     query = select(PreModData).filter(PreModData.internal_id == internal_id)
     r = await session.execute(query)
@@ -64,17 +65,21 @@ async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession,
                         MediaAttachment(type=ContentType.PHOTO,
                                         file_id=MediaId(line.get('preview_size'))))
             if type_ == 'video':
+                # for video in attachments.get(type_):
+                #     video_title = await download_video(video=video, format_quality=[240])
+                #     files.append(
+                #         MediaAttachment(type=ContentType.VIDEO,
+                #                         path=f"{root_path}/{video_title}"))
                 for video in attachments.get(type_):
-                    video_title = await download_video(video=video, format_quality=[240])
-                    files.append(
-                        MediaAttachment(type=ContentType.VIDEO,
-                                        path=f"{root_path}/{video_title}"))
+                    video_links.append(video)
+
     return {
         'date': data.date.strftime("%d.%m %H:%M"),
         'text': data.text[:950],
         'files': files,
         'info': data,
-        'attachments_info': data.attachments_info
+        'attachments_info': data.attachments_info,
+        'videos': ' '.join(video_links) + '\n'
     }
 
 
