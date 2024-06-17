@@ -110,12 +110,7 @@ async def post_to_telegram(post: PreModData):
         disable_web_page_preview=True,
         disable_notification=hv.notification
     )
-    send_media_args.update(
-        chat_id=hv.tg_chat_id,
-        media=media_group.build(),
-        disable_notification=hv.notification,
-        request_timeout=1000
-    )
+
     if post.attachments_info:
         attachments = json.loads(post.attachments)
         if attachments.get('photo') or attachments.get('video'):
@@ -140,11 +135,18 @@ async def post_to_telegram(post: PreModData):
                 #     urllib.request.urlretrieve(attachments.get(key).get('link'), f"{root_path}/{filename}")
                 #     doc_builder.add_document(media=FSInputFile(path=f"{root_path}/{filename}"))
                 #     await asyncio.sleep(0.5)
-
+            media_group.caption = caption
+            send_media_args.update(
+                chat_id=hv.tg_chat_id,
+                disable_notification=hv.notification,
+                request_timeout=1000
+            )
             if len(caption) < 1024:
-                media_group.caption = caption
+                send_media_args.update(media=media_group.build())
                 answer = await bot.send_media_group(**send_media_args)
             else:
+                media_group.caption = None
+                send_media_args.update(media=media_group.build())
                 answer = await bot.send_media_group(**send_media_args)
                 answer = await bot.send_message(**send_message_args)
         else:
