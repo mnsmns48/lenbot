@@ -17,7 +17,7 @@ async def vacancies_list_getter(**kwargs):
     async with engine.scoped_session() as session:
         r = await session.execute(query)
         data = r.fetchall()
-    image_id = "AgACAgIAAxkBAAIG7GZvNIoqdImHTV_8ZcZUwU_2SwABRAACIdoxGyEugUv658JZcLxmSQEAAwIAA3kAAzUE"
+    image_id = "AgACAgIAAxkBAAI38mZwugXb22mdLiA7bilJOTUSGPUeAAIh2jEbIS6BS-JS2DcLu0ndAQADAgADeQADNQQ"
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         "vacancies_list_": data,
@@ -38,7 +38,7 @@ async def vac_info_getter(dialog_manager: DialogManager, **kwargs):
 
 
 async def get_main_getter(**kwargs):
-    image_id = "AgACAgIAAxkBAAIEgmZuq2KapQqrZ5USM6yMCPwVewABewACY9gxGyEueUsoKfVgZqpy8gEAAwIAA3kAAzUE"
+    image_id = "AgACAgIAAxkBAAI36WZwuZxKqnLdv2dCucnyS4wrZBQAA2PYMRshLnlLnhYDTWWiSsIBAAMCAAN5AAM1BA"
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         'main_photo': image
@@ -46,7 +46,7 @@ async def get_main_getter(**kwargs):
 
 
 async def search_byphone_getter(**kwargs):
-    image_id = "AgACAgIAAxkBAAIFOmZuwmG0nHBNAAED4PwuJ8NAkAZvNgAC3tgxGyEueUtYUnyHMSkpJwEAAwIAA3gAAzUE"
+    image_id = "AgACAgIAAxkBAAI37GZwub_pg5GN7td0sD_Kb1qsKm0YAALe2DEbIS55S9MLH5kqtm3yAQADAgADeAADNQQ"
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
 
     return {
@@ -82,7 +82,7 @@ async def get_number(dialog_manager: DialogManager, session: AsyncSession, **kwa
 
 
 async def contact_admin_getter(**kwargs):
-    image_id = "AgACAgIAAxkBAAIGBWZu2g5-1t4M8O0WHkg74RYKGhqKAAJF2TEbIS55Sy_bQvftoYTxAQADAgADeQADNQQ"
+    image_id = "AgACAgIAAxkBAAI372Zwud1F6VvHip1r0p_BKAPJW8kXAAJF2TEbIS55S3n3XSWnm9EvAQADAgADeQADNQQ"
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         'contact_admin': image

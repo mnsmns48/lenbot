@@ -7,7 +7,6 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
-from sqlalchemy import delete
 
 from bot import bot
 from config import root_path, hv, engine
@@ -106,7 +105,7 @@ async def send_dobrotsen(c: CallbackQuery, widget: Button, dialog_manager: Dialo
     kb.add(InlineKeyboardButton(text="Цены Доброцена", url="https://t.me/pgtlenino_bot"))
     await bot.send_photo(
         chat_id=hv.tg_chat_id,
-        photo='AgACAgIAAxkBAAIxqGY3PMK0W54gK0l_Xyqe3OaeIpdCAAKR1jEbO1rASUiom6L0TtkgAQADAgADeAADNQQ',
+        photo='AgACAgIAAxkBAAI39WZwukPXLx7Tny6yKXxiId2nXXa8AALl5TEbXs6AS0eRN2Yp-JPAAQADAgADeAADNQQ',
         disable_notification=hv.notification,
         reply_markup=kb.as_markup()
     )
@@ -119,7 +118,7 @@ async def send_lenino_work(c: CallbackQuery, widget: Button, dialog_manager: Dia
     kb.add(InlineKeyboardButton(text="‍🍳 Вакансии 👨‍🔧", url="https://t.me/pgtlenino_bot"))
     await bot.send_photo(
         chat_id=hv.tg_chat_id,
-        photo='AgACAgIAAxkBAAIzn2ZAikXxLIHIgEjP6CJ905PAUfFmAAI62zEba4MAAUrp7N-ctS2YAgEAAwIAA3kAAzUE',
+        photo='AgACAgIAAxkBAAI38mZwugXb22mdLiA7bilJOTUSGPUeAAIh2jEbIS6BS-JS2DcLu0ndAQADAgADeQADNQQ',
         disable_notification=hv.notification,
         reply_markup=kb.as_markup()
     )
@@ -134,5 +133,3 @@ async def get_guests_click(c: CallbackQuery, widget: Button, dialog_manager: Dia
 async def start_main_menu(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     await dialog_manager.done()
     await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
-
-
