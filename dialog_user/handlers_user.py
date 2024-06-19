@@ -6,12 +6,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ContentType
 from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram_dialog import DialogManager, StartMode, Dialog
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from dialog_user.state_user import Vacancies, ListenUser, UserMainMenu
 from dialog_user.window_user import vacancies_window_list, vacancies_window_info, user_main_menu_window, \
     search_byphone_window, get_phone_window, contact_administrator_window  # suggest_post_window, accept_post_window
 from middleware import MediaGroupMiddleware
-from func import get_info_by_phone
+from func import get_info_by_phone, write_user
 from bot import bot
 from keyboards_user import main_kb, public
 from config import hv
@@ -35,7 +36,8 @@ user_.include_routers(
 )
 
 
-async def start(m: Message, dialog_manager: DialogManager):
+async def start(m: Message, dialog_manager: DialogManager, session: AsyncSession):
+    await write_user(m, session)
     await dialog_manager.start(UserMainMenu.start, mode=StartMode.RESET_STACK)
 
 
@@ -48,8 +50,7 @@ def receive_attach(album: MediaGroupBuilder, m: Message) -> MediaGroupBuilder:
 
 
 # async def start(m: Message):
-#     async with engine.scoped_session() as session:
-#         await write_user(m, session)
+
 #     await m.answer_photo(photo='AgACAgIAAxkBAAITZmQlo77a9vGGy1DlE30EBC652E9-AAIyxjEbbWMpSZgCRTKnxt4VAQADAgADeQADLwQ',
 #                          caption='Этот бот принимает посты в телеграм канал @leninocremia',
 #                          reply_markup=main_kb.as_markup())

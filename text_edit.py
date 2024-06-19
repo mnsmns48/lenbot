@@ -15,7 +15,8 @@ async def replacer(text: str) -> str:
         'нашей газете': 'нашему телеграм каналу',
         '>': ' ',
         '<': ' ',
-    }
+
+     }
     pattern = re.compile("|".join(re.escape(key) for key in pattern_dict))
     replaced = pattern.sub(lambda match: pattern_dict[match.group(0)], text).strip()
     await asyncio.sleep(0.1)
