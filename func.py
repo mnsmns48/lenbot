@@ -20,7 +20,7 @@ from crud import write_data, delete_data
 from models import Visitors, Posts, PreModData
 from yt_dlp import YoutubeDL, DownloadError
 
-from text_edit import replacer
+from text_edit import replacer_v2
 
 
 async def write_user(m: Message, session: AsyncSession):
@@ -92,7 +92,7 @@ async def download_video(video: str, format_quality: list) -> str | None:
 
 async def post_to_telegram(post: PreModData):
     media_group = MediaGroupBuilder()
-    caption = await replacer(text=post.text)
+    caption = await replacer_v2(text=post.text)
     if post.is_repost:
         repost_place = 'public' if post.repost_source_id < 0 else 'id'
         repost = f"<b> → → → → Р Е П О С Т ↓ ↓ ↓ ↓</b>\n" \
