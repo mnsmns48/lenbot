@@ -76,12 +76,15 @@ async def download_video(video: str, format_quality: list) -> str | None:
         with YoutubeDL(ydl_opts) as ydl:
             formats = list()
             pre_res = ydl.extract_info(video, download=False)
-            [formats.append(format_) for format_ in pre_res.get('formats') if format_.get('height')]
+            [formats.append(format_) for format_ in pre_res.get('formats') if (format_.get('height')
+                                                                               and format_.get('acodec') != 'none')]
             formats.sort(key=itemgetter('height'))
             for format_ in formats:
+                print(format_)
                 if format_.get('height') in format_quality:
                     ydl_opts['format'] = format_.get('format_id')
                     break
+            print(ydl_opts['format'])
         with YoutubeDL(ydl_opts) as ydl:
             result = ydl.extract_info(video)
             title = ydl.prepare_filename(result)
@@ -119,7 +122,7 @@ async def post_to_telegram(post: PreModData):
                         await asyncio.sleep(0.5)
                 if key == 'video':
                     for video in attachments.get(key):
-                        video_title = await download_video(video=video, format_quality=[426, 480, 720, 852])
+                        video_title = await download_video(video=video, format_quality=[426, 480, 640, 360, 720, 852])
                         if video_title:
                             if os.path.getsize(f"{root_path}/{video_title}") < 52400000:
                                 media_group.add_video(
