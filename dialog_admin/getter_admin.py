@@ -99,7 +99,7 @@ async def get_guests_getter(dialog_manager: DialogManager, session: AsyncSession
     r: Result = await session.execute(query)
     guests = r.all()
     for line in guests:
-        my_row += ''.join([f'{line[0].strftime("%m-%d-%Y %H:%M")} {line[1]} {line[2]} {line[3]}\n'])
+        my_row += ''.join([f'{line[0].strftime("%d-%m-%Y %H:%M")} {line[1]} {line[2]} {line[3]}\n'])
     return {
         'guests': my_row
     }
