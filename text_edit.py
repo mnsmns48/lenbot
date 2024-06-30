@@ -33,7 +33,7 @@ async def replacer_v2(text: str) -> str:
         print(pattern_1)
         pattern = re.compile(str(pattern_1[0][0]) + '.*?' + str(pattern_1[0][1]))
         response = re.search(pattern, replaced_text)
-        replace_string = 'По информации, переданной нашему телеграм каналу'
+        replace_string = 'По информации, которую передали нашему телеграм каналу'
         replaced_text = replaced_text.replace(response.group(), replace_string)
 
     pattern_2 = re.findall(r"(печатной версии)", replaced_text)
