@@ -97,7 +97,7 @@ def info_window(**kwargs):
             Format(text="Вложения: {attachments_info}", when=F['attachments_info']),
             Format("{date} {info.source} {info.source_title} "),
             Format("{text}", when=F['text']),
-            Format('{videos}'), when=(F['videos']) | (len(['videos']) < 2)),
+            Format('{videos}'), when=(F['videos']) | (F['videos'].len() < 2)),
         MediaScroll(
             DynamicMedia(selector='item'),
             id='media_scroll',
