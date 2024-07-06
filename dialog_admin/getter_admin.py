@@ -75,7 +75,7 @@ async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession,
 
     return {
         'date': data.date.strftime("%d.%m %H:%M"),
-        'text': data.text[:900],
+        'text': data.text[:850],
         'files': files,
         'info': data,
         'attachments_info': data.attachments_info,
