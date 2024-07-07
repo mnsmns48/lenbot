@@ -20,7 +20,7 @@ from crud import write_data, delete_data
 from models import Visitors, Posts, PreModData
 from yt_dlp import YoutubeDL, DownloadError
 
-from text_edit import replacer_v2
+from text_edit import replacer
 
 
 async def write_user(m: Message, session: AsyncSession):
@@ -80,22 +80,20 @@ async def download_video(video: str, format_quality: list) -> str | None:
                                                                                and format_.get('acodec') != 'none')]
             formats.sort(key=itemgetter('height'))
             for format_ in formats:
-                print(format_)
                 if format_.get('height') in format_quality:
                     ydl_opts['format'] = format_.get('format_id')
                     break
-            print(ydl_opts['format'])
         with YoutubeDL(ydl_opts) as ydl:
             result = ydl.extract_info(video)
             title = ydl.prepare_filename(result)
         return title
-    except DownloadError:
-        print('DownloadError')
+    except DownloadError as de:
+        print('DownloadError', de)
 
 
 async def post_to_telegram(post: PreModData):
     media_group = MediaGroupBuilder()
-    caption = await replacer_v2(text=post.text)
+    caption = await replacer(text=post.text)
     if post.is_repost:
         repost_place = 'public' if post.repost_source_id < 0 else 'id'
         repost = f"<b> → → → → Р Е П О С Т ↓ ↓ ↓ ↓</b>\n" \

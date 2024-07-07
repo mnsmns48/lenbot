@@ -45,6 +45,13 @@ async def on_delete(c: CallbackQuery, widget: Button, dialog_manager: DialogMana
     await dialog_manager.switch_to(PreModerateStates.post_list)
 
 
+async def delete_btn_3min(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    del_id = dialog_manager.dialog_data['internal_id']
+    async with engine.scoped_session() as session:
+        await delete_data(session=session, table=PreModData, column=PreModData.internal_id, data_id=del_id)
+    await dialog_manager.switch_to(PreModerateStates.post_list)
+
+
 async def on_go_post(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     await dialog_manager.answer_callback()
     await post_to_telegram(post=dialog_manager.dialog_data['full_post_info'])

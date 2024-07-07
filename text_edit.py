@@ -2,7 +2,7 @@ import asyncio
 import re
 
 
-async def replacer_v1(text: str) -> str:
+async def replacer(text: str) -> str:
     pattern_dict = {
         'нашей районной газете "Репортер Восточного Крыма"': 'нашему телеграм каналу',
         'нашей районной газете Репортер Восточного Крыма': 'нашему телеграм каналу',
@@ -13,20 +13,22 @@ async def replacer_v1(text: str) -> str:
         'газета #РепортерВосточногоКрыма': 'наш телеграм канал',
         'нашей районной газете': 'нашему телеграм каналу',
         'нашей газете': 'нашему телеграм каналу',
+        'Репортер': '',
         '>': ' ',
         '<': ' ',
-
     }
-    pattern = re.compile("|".join(re.escape(key) for key in pattern_dict))
-    replaced = pattern.sub(lambda match: pattern_dict[match.group(0)], text).strip()
-    await asyncio.sleep(0.1)
-    return replaced
 
-
-async def replacer_v2(text: str) -> str:
-    pattern_dict = {'>': ' ', '<': ' '}
     pattern = re.compile("|".join(re.escape(key) for key in pattern_dict))
     replaced_text = pattern.sub(lambda match: pattern_dict[match.group(0)], text).strip()
+
+    vk_link_pattern_ = re.compile(r'\[{1}\w{10,12}\|{1}.+]{1}')
+    find_vk_link = re.search(vk_link_pattern_, replaced_text)
+    if find_vk_link:
+        print(find_vk_link)
+        split_link_ = find_vk_link.group().split('|')
+        replaced_text = re.sub(pattern=vk_link_pattern_,
+                               repl=f"<a href='https://vk.com/{split_link_[0][1:]}'>{split_link_[1][:-1]}</a>",
+                               string=replaced_text)
 
     pattern_1 = re.findall(r"([кКkK][аАaA@][кКkK])[\s]*(.+[КкkK][рРpP][ы][MMМм][aAАа@])", replaced_text)
     if pattern_1:
@@ -45,4 +47,4 @@ async def replacer_v2(text: str) -> str:
                 replaced_text = replaced_text[:i]
                 break
     await asyncio.sleep(0.1)
-    return replaced_text
+    return replaced_text.replace(' ""', ' ')
