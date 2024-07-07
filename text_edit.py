@@ -24,7 +24,6 @@ async def replacer(text: str) -> str:
     vk_link_pattern_ = re.compile(r'\[{1}\w{10,12}\|{1}.+]{1}')
     find_vk_link = re.search(vk_link_pattern_, replaced_text)
     if find_vk_link:
-        print(find_vk_link)
         split_link_ = find_vk_link.group().split('|')
         replaced_text = re.sub(pattern=vk_link_pattern_,
                                repl=f"<a href='https://vk.com/{split_link_[0][1:]}'>{split_link_[1][:-1]}</a>",
@@ -32,7 +31,6 @@ async def replacer(text: str) -> str:
 
     pattern_1 = re.findall(r"([кКkK][аАaA@][кКkK])[\s]*(.+[КкkK][рРpP][ы][MMМм][aAАа@])", replaced_text)
     if pattern_1:
-        print(pattern_1)
         pattern = re.compile(str(pattern_1[0][0]) + '.*?' + str(pattern_1[0][1]))
         response = re.search(pattern, replaced_text)
         replace_string = 'По информации, которую передали нашему телеграм каналу'

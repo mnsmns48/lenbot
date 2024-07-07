@@ -72,7 +72,6 @@ async def post_info_getter(dialog_manager: DialogManager, session: AsyncSession,
                 #                         path=f"{root_path}/{video_title}"))
                 for video in attachments.get(type_):
                     video_links.append(video)
-    print(data.signer_id)
     return {
         'date': data.date.strftime("%d.%m %H:%M"),
         'text': data.text[:900],
