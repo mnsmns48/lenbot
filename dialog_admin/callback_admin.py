@@ -109,7 +109,7 @@ async def choose_marketing(c: CallbackQuery, widget: Button, dialog_manager: Dia
 
 async def send_dobrotsen(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     kb = InlineKeyboardBuilder()
-    kb.add(InlineKeyboardButton(text="Цены Доброцена", url="https://t.me/pgtlenino_bot"))
+    kb.add(InlineKeyboardButton(text="Витрина Доброцена", url="https://t.me/pgtlenino_bot"))
     await bot.send_photo(
         chat_id=hv.tg_chat_id,
         photo='AgACAgIAAxkBAAI39WZwukPXLx7Tny6yKXxiId2nXXa8AALl5TEbXs6AS0eRN2Yp-JPAAQADAgADeAADNQQ',

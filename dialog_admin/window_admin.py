@@ -118,7 +118,7 @@ def info_window(**kwargs):
         Button(text=Format('Удалить на 3 минуты'),
                id='delete_btn_3min',
                on_click=delete_btn_3min),
-        Button(text=Format('!! Удалить'),
+        Button(text=Format('Удалить'),
                id='delete_btn',
                on_click=on_delete),
         state=PreModerateStates.post_info,
