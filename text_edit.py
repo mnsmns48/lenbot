@@ -21,7 +21,7 @@ async def replacer(text: str) -> str:
     pattern = re.compile("|".join(re.escape(key) for key in pattern_dict))
     replaced_text = pattern.sub(lambda match: pattern_dict[match.group(0)], text).strip()
 
-    vk_link_pattern_ = re.compile(r'\[{1}\w{10,12}\|{1}.+]{1}')
+    vk_link_pattern_ = re.compile(r'\[{1}\w{10,20}\|{1}.+]{1}')
     find_vk_link = re.search(vk_link_pattern_, replaced_text)
     if find_vk_link:
         split_link_ = find_vk_link.group().split('|')
