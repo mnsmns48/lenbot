@@ -36,4 +36,4 @@ async def upload_pic(m: Message):
 async def register_admin_handlers():
     admin_.message.filter(AdminFilter())
     admin_.message.register(start, CommandStart())
-    # admin_.message.register(upload_pic, F.photo)
+    admin_.message.register(upload_pic, F.photo)

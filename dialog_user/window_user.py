@@ -66,9 +66,9 @@ def user_main_menu_window(**kwargs):
         Const('Главное меню'),
         DynamicMedia('main_photo'),
         Column(
-            # Button(text=Format('Предложить пост Ленино Главное Крым🏖'),
-            #        id='suggest_post_btn',
-            #        on_click=suggest_post_click),
+            Button(text=Format('Предложить пост Ленино Главное Крым🏖'),
+                   id='suggest_post_btn',
+                   on_click=suggest_post_click),
             Button(text=Format('Отправить сообщение администратору'),
                    id='Admin_message_btn',
                    on_click=contact_administrator_click),

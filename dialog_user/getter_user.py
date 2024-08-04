@@ -8,7 +8,7 @@ from aiogram_dialog.api.entities import MediaAttachment, MediaId
 from sqlalchemy import select, Result
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from config import engine
+from config import engine, hv, _img
 from models import LeninoWork, Posts
 
 
@@ -17,7 +17,7 @@ async def vacancies_list_getter(**kwargs):
     async with engine.scoped_session() as session:
         r = await session.execute(query)
         data = r.fetchall()
-    image_id = "AgACAgIAAxkBAAI38mZwugXb22mdLiA7bilJOTUSGPUeAAIh2jEbIS6BS-JS2DcLu0ndAQADAgADeQADNQQ"
+    image_id = _img.work_img
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         "vacancies_list_": data,
@@ -38,7 +38,7 @@ async def vac_info_getter(dialog_manager: DialogManager, **kwargs):
 
 
 async def get_main_getter(**kwargs):
-    image_id = "AgACAgIAAxkBAAI36WZwuZxKqnLdv2dCucnyS4wrZBQAA2PYMRshLnlLnhYDTWWiSsIBAAMCAAN5AAM1BA"
+    image_id = _img.main_page_image
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         'main_photo': image
@@ -46,7 +46,7 @@ async def get_main_getter(**kwargs):
 
 
 async def search_byphone_getter(**kwargs):
-    image_id = "AgACAgIAAxkBAAI37GZwub_pg5GN7td0sD_Kb1qsKm0YAALe2DEbIS55S9MLH5kqtm3yAQADAgADeAADNQQ"
+    image_id = _img.search_number
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
 
     return {
@@ -82,7 +82,7 @@ async def get_number(dialog_manager: DialogManager, session: AsyncSession, **kwa
 
 
 async def contact_admin_getter(**kwargs):
-    image_id = "AgACAgIAAxkBAAI372Zwud1F6VvHip1r0p_BKAPJW8kXAAJF2TEbIS55S3n3XSWnm9EvAQADAgADeQADNQQ"
+    image_id = _img.admin_img
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     return {
         'contact_admin': image
@@ -90,7 +90,7 @@ async def contact_admin_getter(**kwargs):
 
 
 async def suggest_post_getter(**kwargs):
-    image_id = "AgACAgIAAxkBAAIGjGZu9iacNYUY_9pBvR_pWZeIN9d_AAIi2jEbIS55S1hzEEFTwYUyAQADAgADeAADNQQ"
+    image_id = _img.suggest_post
     image = MediaAttachment(ContentType.PHOTO, file_id=MediaId(image_id))
     text = ('Пиши текст, отправляй вложения\n\n'
             'ВАЖНО!\n'

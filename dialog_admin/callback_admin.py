@@ -9,7 +9,7 @@ from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
 from bot import bot
-from config import root_path, hv, engine
+from config import root_path, hv, engine, _img
 from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin
 from func import post_to_telegram
 from crud import write_data, delete_data
@@ -112,7 +112,7 @@ async def send_dobrotsen(c: CallbackQuery, widget: Button, dialog_manager: Dialo
     kb.add(InlineKeyboardButton(text="Витрина Доброцена", url="https://t.me/pgtlenino_bot"))
     await bot.send_photo(
         chat_id=hv.tg_chat_id,
-        photo='AgACAgIAAxkBAAI39WZwukPXLx7Tny6yKXxiId2nXXa8AALl5TEbXs6AS0eRN2Yp-JPAAQADAgADeAADNQQ',
+        photo=_img.dobrotsen_img,
         disable_notification=hv.notification,
         reply_markup=kb.as_markup()
     )
@@ -125,7 +125,7 @@ async def send_lenino_work(c: CallbackQuery, widget: Button, dialog_manager: Dia
     kb.add(InlineKeyboardButton(text="‍🍳 Вакансии 👨‍🔧", url="https://t.me/pgtlenino_bot"))
     await bot.send_photo(
         chat_id=hv.tg_chat_id,
-        photo='AgACAgIAAxkBAAI38mZwugXb22mdLiA7bilJOTUSGPUeAAIh2jEbIS6BS-JS2DcLu0ndAQADAgADeQADNQQ',
+        photo=_img.work_img,
         disable_notification=hv.notification,
         reply_markup=kb.as_markup()
     )

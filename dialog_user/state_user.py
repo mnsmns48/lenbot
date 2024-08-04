@@ -9,7 +9,6 @@ class Vacancies(StatesGroup):
 
 class ListenUser(StatesGroup):
     to_admin_ = State()
-    # search_phone = State()
 
 
 class SuggestPost(StatesGroup):

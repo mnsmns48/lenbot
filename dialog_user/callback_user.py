@@ -54,7 +54,8 @@ async def get_admin_message(m: Message, widget: MessageInput, dialog_manager: Di
 
 
 async def suggest_post_click(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
-    await dialog_manager.start(SuggestPost.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
+    await dialog_manager.done()
+    await c.answer('Временно недоступно')
 
 # async def get_post_from_user(m: Message,
 #                              widget: MessageInput,

@@ -9,6 +9,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 
 from pydantic_settings import BaseSettings
 
+root_path = Path(os.path.abspath(__file__)).parent
+
 
 class Settings(BaseSettings):
     tg_bot_admin: list[int]
@@ -23,9 +25,17 @@ class Settings(BaseSettings):
     notification: bool
 
 
-root_path = Path(os.path.abspath(__file__)).parent
+class BotImages(BaseSettings):
+    main_page_image: str
+    suggest_post: str
+    admin_img: str
+    work_img: str
+    search_number: str
+    dobrotsen_img: str
+
 
 hv = Settings(_env_file=f"{root_path}/.env")
+_img = BotImages(_env_file=f"{root_path}/pictures.env")
 
 
 class CoreConfig():
