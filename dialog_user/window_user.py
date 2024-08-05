@@ -65,9 +65,9 @@ def user_main_menu_window(**kwargs):
         Const('Главное меню'),
         DynamicMedia('main_photo'),
         Column(
-            Button(text=Format('ПРЕДЛОЖИТЬ в Ленино Главное Крым🏖'),
-                   id='suggest_post_btn',
-                   on_click=suggest_post_click),
+            # Button(text=Format('ПРЕДЛОЖИТЬ в Ленино Главное Крым🏖'),
+            #        id='suggest_post_btn',
+            #        on_click=suggest_post_click),
             Button(text=Format('РАБОТА! Вакансии по Ленинскому району'),
                    id='vacancies_btn',
                    on_click=vacancies_list),
