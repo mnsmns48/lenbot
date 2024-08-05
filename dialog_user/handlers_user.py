@@ -8,32 +8,32 @@ from aiogram.utils.media_group import MediaGroupBuilder
 from aiogram_dialog import DialogManager, StartMode, Dialog
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dialog_user.state_user import Vacancies, ListenUser, UserMainMenu
+from dialog_user.keyboards_user import public, main_kb
+from dialog_user.state_user import Vacancies, ListenUser, UserMainMenu, Suggest
 from dialog_user.window_user import vacancies_window_list, vacancies_window_info, user_main_menu_window, \
-    search_byphone_window, get_phone_window, contact_administrator_window  # suggest_post_window, accept_post_window
-from middleware import MediaGroupMiddleware
+    search_byphone_window, get_phone_window, contact_administrator_window, \
+    suggest_buttons  # suggest_post_window, accept_post_window
+from middleware import AlbumMiddleware
 from func import get_info_by_phone, write_user
 from bot import bot
-from keyboards_user import main_kb, public
 from config import hv
 
 user_ = Router()
 
-user_.message.middleware(MediaGroupMiddleware())
+user_.message.middleware(AlbumMiddleware())
 
 vacancies = Dialog(vacancies_window_list(), vacancies_window_info())
 main_menu_dialog = Dialog(user_main_menu_window())
 search_byphone_ = Dialog(search_byphone_window(), get_phone_window())
 contact_admin_ = Dialog(contact_administrator_window())
-# suggest_post = Dialog(suggest_post_window(), accept_post_window())
+suggest = Dialog(suggest_buttons())
 
 user_.include_routers(
     main_menu_dialog,
     vacancies,
     search_byphone_,
     contact_admin_,
-    # suggest_post
-)
+    suggest)
 
 
 async def start(m: Message, dialog_manager: DialogManager, session: AsyncSession):
@@ -159,6 +159,7 @@ async def vacancies_dialogs(m: Message, dialog_manager: DialogManager):
 
 async def register_user_handlers():
     user_.message.register(start, CommandStart())
+    user_.message.register(suggest_post, Suggest.suggest_post)
     # user_.message.register(show_phone_m, Command("search_phone"))
     # user_.callback_query.register(show_phone, F.data == 'search_phone')
     # user_.callback_query.register(vacancies_dialogs, F.data == 'vacancies')

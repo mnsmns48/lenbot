@@ -1,6 +1,7 @@
 import os
 from asyncio import current_task
 from contextlib import asynccontextmanager
+from datetime import date
 from pathlib import Path
 
 from pydantic import SecretStr
@@ -10,6 +11,9 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, Asyn
 from pydantic_settings import BaseSettings
 
 root_path = Path(os.path.abspath(__file__)).parent
+today = date.today()
+if not os.path.exists(f"{root_path}/logs"):
+    os.mkdir(f"{root_path}/logs")
 
 
 class Settings(BaseSettings):

@@ -10,7 +10,7 @@ from aiogram_dialog.widgets.kbd import Button
 
 from bot import bot
 from config import root_path, hv, engine, _img
-from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin
+from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin, LoadImage
 from func import post_to_telegram
 from crud import write_data, delete_data
 from models import PreModData, BadPosts
@@ -57,18 +57,6 @@ async def on_go_post(c: CallbackQuery, widget: Button, dialog_manager: DialogMan
     await post_to_telegram(post=dialog_manager.dialog_data['full_post_info'])
     await dialog_manager.start(PreModerateStates.post_list, mode=StartMode.RESET_STACK,
                                show_mode=ShowMode.DELETE_AND_SEND)
-
-
-async def clean_cashe_folder(c: CallbackQuery, widget: Any,
-                             dialog_manager: DialogManager):
-    for filename in os.listdir(f"{root_path}/attachments"):
-        file_path = os.path.join(f"{root_path}/attachments", filename)
-        try:
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-        except Exception as e:
-            await bot.send_message(chat_id=hv.editor_admin, text='Ошибка')
-    await bot.send_message(chat_id=hv.editor_admin, text='Кэш очищен')
 
 
 async def posts_manager_click(c: CallbackQuery, widget: Button,
@@ -140,3 +128,16 @@ async def get_guests_click(c: CallbackQuery, widget: Button, dialog_manager: Dia
 async def start_main_menu(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     await dialog_manager.done()
     await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
+
+
+async def load_image(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.start(state=LoadImage.get_image, mode=StartMode.RESET_STACK,
+                               show_mode=ShowMode.DELETE_AND_SEND)
+    await c.answer('Жду картинку')
+
+
+async def upload_pic(m: Message, message_input: MessageInput, dialog_manager: DialogManager):
+    id_photo = m.photo[-1].file_id
+    await m.answer('Загружено\nID на сервере Telegram:')
+    await m.answer(id_photo)
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)

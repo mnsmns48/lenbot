@@ -1,5 +1,15 @@
-from aiogram.types import InlineKeyboardButton, WebAppInfo
+from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+
+
+def cancel_kb():
+    buttons = [
+        [
+            InlineKeyboardButton(text="Отмена", callback_data="cancel"),
+        ]]
+    keyboard = InlineKeyboardMarkup(inline_keyboard=buttons)
+    return keyboard
+
 
 main_kb = InlineKeyboardBuilder()
 main_kb.add(InlineKeyboardButton(

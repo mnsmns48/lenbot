@@ -9,11 +9,13 @@ class Vacancies(StatesGroup):
 
 class ListenUser(StatesGroup):
     to_admin_ = State()
+    suggest_ = State()
 
 
-class SuggestPost(StatesGroup):
-    start = State()
-    get_data = State()
+class Suggest(StatesGroup):
+    suggest_choose = State()
+    suggest_post = State()
+    suggest_work = State()
 
 
 class UserMainMenu(StatesGroup):

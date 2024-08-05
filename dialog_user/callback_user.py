@@ -1,14 +1,17 @@
 from typing import Any
 
 from aiogram.enums import ContentType
-from aiogram.types import CallbackQuery, Message
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.storage.base import StorageKey
+from aiogram.types import CallbackQuery, Message, InlineKeyboardButton
 from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
 
-from bot import bot
+from bot import bot, storage
 from config import hv
-from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState, ListenUser, SuggestPost
+from dialog_user.keyboards_user import cancel_kb
+from dialog_user.state_user import Vacancies, UserMainMenu, SearchPhoneState, ListenUser, Suggest
 
 
 async def start(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
@@ -54,8 +57,8 @@ async def get_admin_message(m: Message, widget: MessageInput, dialog_manager: Di
 
 
 async def suggest_post_click(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
-    await dialog_manager.done()
-    await c.answer('Временно недоступно')
+    await dialog_manager.start(Suggest.suggest_choose, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
+
 
 # async def get_post_from_user(m: Message,
 #                              widget: MessageInput,
@@ -67,3 +70,23 @@ async def suggest_post_click(c: CallbackQuery, widget: Button, dialog_manager: D
 #         print(text_line)
 #
 #     await dialog_manager.switch_to(SuggestPost.get_data, show_mode=ShowMode.DELETE_AND_SEND)
+
+async def suggest_post_cb(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.done(show_mode=ShowMode.DELETE_AND_SEND)
+    key = StorageKey(bot_id=c.bot.id, chat_id=c.from_user.id, user_id=c.from_user.id)
+    state = FSMContext(storage=storage, key=key)
+    await c.message.answer(text='Если пост с картинкой или видео, добавляем медиа, а текст пишем, как подпись\n'
+                                'Предлагайте или жмите отмена',
+                           reply_markup=cancel_kb())
+    await state.set_state(Suggest.suggest_post)
+
+
+async def suggest_work_cb(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    await dialog_manager.done()
+    key = StorageKey(bot_id=c.bot.id, chat_id=c.from_user.id, user_id=c.from_user.id)
+    state = FSMContext(storage=storage, key=key)
+    keyboard = cancel_kb()
+    keyboard.inline_keyboard.append([InlineKeyboardButton(text="Начинаем", callback_data="start")])
+    await c.message.answer('Что бы информация попала в колонку РАБОТА, необходимо вносить, отвечая на вопросы',
+                           reply_markup=keyboard)
+    await state.set_state(Suggest.suggest_work)

@@ -9,13 +9,13 @@ from aiogram_dialog.widgets.kbd import ScrollingGroup, Select, Button, Column, U
 from aiogram_dialog.widgets.media import MediaScroll, DynamicMedia
 from aiogram_dialog.widgets.text import Const, Format, Multi
 
-from dialog_admin.callback_admin import dialog_close, select_post, start_list, clean_cashe_folder, \
-    posts_manager_click, yandex_weather_click, callback_weather_handler, send_weather_click, choose_marketing, \
+from dialog_admin.callback_admin import select_post, start_list, posts_manager_click, \
+    yandex_weather_click, callback_weather_handler, send_weather_click, choose_marketing, \
     send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click, start_main_menu, on_delete, on_go_post, \
-    delete_btn_3min
+    delete_btn_3min, load_image, upload_pic
 from dialog_admin.getter_admin import posts_list_getter, post_info_getter, send_weather_photo, \
     get_guests_getter
-from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin
+from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin, LoadImage
 
 
 def start_admin_menu(**kwargs):
@@ -35,7 +35,11 @@ def start_admin_menu(**kwargs):
                    id='marketing_btn',
                    on_click=choose_marketing),
             WebApp(text=Const('Доброцен WebApp'), url=Const('https://1385988-ci25991.tw1.ru')),
-            id='admin_main_id'
+            Button(text=Format('Загрузить картинку'),
+                   id='image_btn',
+                   on_click=load_image),
+            id='admin_main_id',
+
         ),
         state=AdminMainMenu.start
     )
@@ -43,7 +47,7 @@ def start_admin_menu(**kwargs):
 
 def yandex_weather_window(**kwargs):
     return Window(
-        Const("Жду скриншот"),
+        Const("Ожидаю скриншот"),
         MessageInput(callback_weather_handler, content_types=[ContentType.PHOTO]),
         state=ListenAdmin.get_weather_screen,
     )
@@ -149,4 +153,12 @@ def visitors(**kwargs):
                on_click=start_main_menu),
         state=AdminMainMenu.visitors,
         getter=get_guests_getter
+    )
+
+
+def send_image(**kwargs):
+    return Window(
+        Const("Добавь изображение"),
+        MessageInput(upload_pic, content_types=[ContentType.PHOTO]),
+        state=LoadImage.get_image
     )
