@@ -12,12 +12,6 @@ class ListenUser(StatesGroup):
     suggest_ = State()
 
 
-class Suggest(StatesGroup):
-    suggest_choose = State()
-    suggest_post = State()
-    suggest_work = State()
-
-
 class UserMainMenu(StatesGroup):
     start = State()
 
@@ -25,3 +19,11 @@ class UserMainMenu(StatesGroup):
 class SearchPhoneState(StatesGroup):
     start = State()
     get_phone_number = State()
+
+
+class Suggest(StatesGroup):
+    suggest_choose = State()
+    suggest_post = State()
+    publish_post = State()
+    suggest_work = State()
+

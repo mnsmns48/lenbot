@@ -3,16 +3,16 @@ import asyncio
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery, ContentType
+from aiogram.types import Message, CallbackQuery, ContentType, InputMediaPhoto, InputMediaVideo
 from aiogram.utils.media_group import MediaGroupBuilder
-from aiogram_dialog import DialogManager, StartMode, Dialog
+from aiogram_dialog import DialogManager, StartMode, Dialog, ShowMode
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from dialog_user.keyboards_user import public, main_kb
 from dialog_user.state_user import Vacancies, ListenUser, UserMainMenu, Suggest
 from dialog_user.window_user import vacancies_window_list, vacancies_window_info, user_main_menu_window, \
     search_byphone_window, get_phone_window, contact_administrator_window, \
-    suggest_buttons  # suggest_post_window, accept_post_window
+    suggest_buttons
 from middleware import AlbumMiddleware
 from func import get_info_by_phone, write_user
 from bot import bot
@@ -49,22 +49,6 @@ def receive_attach(album: MediaGroupBuilder, m: Message) -> MediaGroupBuilder:
     return album
 
 
-# async def start(m: Message):
-
-#     await m.answer_photo(photo='AgACAgIAAxkBAAITZmQlo77a9vGGy1DlE30EBC652E9-AAIyxjEbbWMpSZgCRTKnxt4VAQADAgADeQADLwQ',
-#                          caption='Этот бот принимает посты в телеграм канал @leninocremia',
-#                          reply_markup=main_kb.as_markup())
-#     await m.answer_photo(photo='AgACAgIAAxkBAAIs2mYQU2B8JEANJKgf8_qVirdNzZ66AALw3TEbFxCBSMq61FIW9Rb4AQADAgADeAADNAQ',
-#                          reply_markup=dobrotsen_kb.as_markup())
-#     await m.answer_photo(photo='AgACAgIAAxkBAAIsvmYQTycTbAba_FyhsimhFAiVAzlTAALa3TEbFxCBSPmCN7X2pEteAQADAgADeAADNAQ',
-#                          caption='Узнать владельца номера телефона ↓ ↓ ↓',
-#                          reply_markup=search_phone_kb.as_markup())
-#     await m.answer_photo(
-#         photo='AgACAgIAAxkBAAIzrGZAjVsEs1tPgOAuzByAY3EAAWqykQACRNsxG2uDAAFKvziH6AABwdK8AQADAgADeQADNQQ',
-#         caption='Работа в Ленинском районе',
-#         reply_markup=work_kb.as_markup())
-
-
 async def suggest_post_callback(c: CallbackQuery, state=FSMContext):
     await c.answer(text='📣📣📣📣📣📣📣📣📣📣📣📣')
     await state.set_state(ListenUser.suggest_)
@@ -92,43 +76,95 @@ async def to_admin(m: Message, state: FSMContext):
     await state.clear()
 
 
-async def suggest_post(m: Message, state: FSMContext, album: list[Message] = None) -> Message:
-    answer_text = 'Твой пост будет выглядит так:\n'
-    if m.content_type == ContentType.TEXT:
-        text_line = f"{m.text}\n\nАвтор: [{m.from_user.full_name}](tg://user?id={m.from_user.id})"
-        await m.answer(text=f"{answer_text}\n\n{text_line}", parse_mode='MarkdownV2')
-        await state.update_data(only_text=text_line)
-        return await m.answer("Публикуем? Ожидаю ответ...", reply_markup=public.as_markup())
-    album_builder = MediaGroupBuilder(
-        caption=f"{m.caption}\n\nАвтор: [{m.from_user.full_name}](tg://user?id={m.from_user.id})"
-    )
-    response = receive_attach(album=album_builder, m=m)
+async def suggest_post(m: Message, state: FSMContext, album: list[Message] = None):
+    display_post = 'Твой пост будет выглядит так:\n'
+    author_line = f"_{m.text}_\n\nАвтор: [{m.from_user.full_name}](tg://user?id={m.from_user.id})"
+    if m.caption:
+        await state.update_data({'caption': m.caption[:1024]})
     if album:
-        for i in range(1, len(album)):
-            response.build().append(receive_attach(album=response, m=album[i]))
-    await m.answer(f"{answer_text}")
-    await m.answer_media_group(response.build())
-    await state.update_data(media_group=response)
-    return await m.answer("Публикуем? Ожидаю ответ...", reply_markup=public.as_markup())
-
-
-async def callback_handler_public(c: CallbackQuery, state=FSMContext):
-    await c.answer(text='Пост отправлен администратору на модерацию')
-    data_in_state = await state.get_data()
-    await bot.send_message(chat_id=hv.tg_bot_admin[0], text='!!!!!!!!!!Пост!!!!!!\n')
-    if data_in_state.get('only_text'):
-        await bot.send_message(chat_id=hv.tg_bot_admin[0],
-                               text=data_in_state.get('only_text'), parse_mode='MarkdownV2')
+        for obj in album:
+            media = list()
+            data = await state.get_data()
+            if obj.content_type == ContentType.PHOTO:
+                media = InputMediaPhoto(media=obj.photo[-1].file_id)
+            if obj.content_type == ContentType.VIDEO:
+                media = InputMediaVideo(media=obj.video.file_id)
+            data['media'] = data.get('media', []) + [media]
+            await state.update_data(data)
+        data = await state.get_data()
+        if len(data.get('media')) > 1:
+            caption = data.get('caption')
+            mg = {'media': data['media'], 'caption': caption if caption else ' '}
+            media_group = MediaGroupBuilder(media=data['media'], caption=caption if caption else ' ')
+            await state.update_data({'type': 'mg', 'data': mg})
+            await m.answer(display_post)
+            await m.answer_media_group(media_group.build())
+            await m.answer("Публикуем? Ожидаю ответ...", reply_markup=public.as_markup())
+            await state.set_state(Suggest.publish_post)
     else:
-        await bot.send_media_group(chat_id=hv.tg_bot_admin[0], media=data_in_state.get('media_group').build())
-    await c.message.answer('Отправлено. Ожидайте публикации')
-    return await state.clear()
+        if m.content_type == ContentType.TEXT:
+            answer_text = f"{display_post}\n{author_line}"
+            await state.update_data({'type': 'only_text', 'data': author_line})
+            await m.answer(answer_text, parse_mode='MarkdownV2')
+            await m.answer("Публикуем? Ожидаю ответ...", reply_markup=public.as_markup())
+            await state.set_state(Suggest.publish_post)
+        if m.content_type == ContentType.PHOTO:
+            author_line = f"_{m.caption if m.caption else ' '}_\n\nАвтор: [{m.from_user.full_name}](tg://user?id={m.from_user.id})"
+            photo = {'media': m.photo[-1].file_id, 'caption': author_line}
+            await state.update_data({'type': 'one_photo', 'data': photo})
+            await m.answer(display_post)
+            await m.answer_photo(photo=photo['media'], caption=photo['caption'], parse_mode='MarkdownV2')
+            await m.answer("Публикуем? Ожидаю ответ...", reply_markup=public.as_markup())
+            await state.set_state(Suggest.publish_post)
+        if m.content_type == ContentType.VIDEO:
+            author_line = f"_{m.caption if m.caption else ' '}_\n\nАвтор: [{m.from_user.full_name}](tg://user?id={m.from_user.id})"
+            video = {'media': m.video.file_id, 'caption': author_line}
+            await state.update_data({'type': 'one_video', 'data': video})
+            await m.answer(display_post)
+            await m.answer_video(video=video['media'], caption=video['caption'], parse_mode='MarkdownV2')
+            await m.answer("Публикуем? Ожидаю ответ...", reply_markup=public.as_markup())
+            await state.set_state(Suggest.publish_post)
 
 
-async def callback_handler_again(c: CallbackQuery, state=FSMContext):
-    await c.answer('Отмена')
-    await c.message.answer('Вы отменили ваш пост, добавьте его заново', reply_markup=main_kb.as_markup())
+async def callback_handler_public(c: CallbackQuery, dialog_manager: DialogManager, state=FSMContext):
+    if c.data == 'again':
+        pass
+    if c.data == 'public':
+        await c.answer(text='Пост отправлен администратору на модерацию')
+        data = await state.get_data()
+        if data.get('type') == 'one_video':
+            await bot.send_video(chat_id=hv.tg_bot_admin[0],
+                                 video=data['data']['media'],
+                                 caption=data['data']['caption'],
+                                 parse_mode='MarkdownV2')
+            await c.message.answer('Отправлено на премодерацию')
+        if data.get('type') == 'one_photo':
+            await bot.send_photo(chat_id=hv.tg_bot_admin[0],
+                                 photo=data['data']['media'],
+                                 caption=data['data']['caption'],
+                                 parse_mode='MarkdownV2')
+            await c.message.answer('Отправлено на премодерацию')
+        if data.get('type') == 'only_text':
+            await bot.send_message(chat_id=hv.tg_bot_admin[0],
+                                   text=data['data'],
+                                   parse_mode='MarkdownV2')
+            await c.message.answer('Отправлено на премодерацию')
+        if data.get('type') == 'mg':
+            media_group = MediaGroupBuilder(media=data['data']['media'], caption=data['data']['caption'])
+            await bot.send_media_group(chat_id=hv.tg_bot_admin[0],
+                                       media=media_group.build())
+            await c.message.answer('Отправлено на премодерацию')
     await state.clear()
+    await asyncio.sleep(2)
+    await dialog_manager.start(UserMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
+
+
+async def callback_handler_again(c: CallbackQuery, dialog_manager: DialogManager, state=FSMContext):
+    await c.answer('Отмена')
+    await c.message.answer('Вы нажали отмена.\n\nОткрываю главное меню')
+    await state.clear()
+    await asyncio.sleep(2)
+    await dialog_manager.start(UserMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
 
 
 async def test(c: CallbackQuery):
@@ -160,6 +196,8 @@ async def vacancies_dialogs(m: Message, dialog_manager: DialogManager):
 async def register_user_handlers():
     user_.message.register(start, CommandStart())
     user_.message.register(suggest_post, Suggest.suggest_post)
+    user_.callback_query.register(callback_handler_again, F.data == 'cancel')
+    user_.callback_query.register(callback_handler_public, Suggest.publish_post)
     # user_.message.register(show_phone_m, Command("search_phone"))
     # user_.callback_query.register(show_phone, F.data == 'search_phone')
     # user_.callback_query.register(vacancies_dialogs, F.data == 'vacancies')

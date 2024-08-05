@@ -68,7 +68,7 @@ class AlbumMiddleware(BaseMiddleware):
 
     album_data: dict = {}
 
-    def __init__(self, latency: Union[int, float] = 0.01):
+    def __init__(self, latency: Union[int, float] = 0.1):
         """
         You can provide custom latency to make sure
         albums are handled properly in highload.

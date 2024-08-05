@@ -72,12 +72,12 @@ async def suggest_post_click(c: CallbackQuery, widget: Button, dialog_manager: D
 #     await dialog_manager.switch_to(SuggestPost.get_data, show_mode=ShowMode.DELETE_AND_SEND)
 
 async def suggest_post_cb(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
-    await dialog_manager.done(show_mode=ShowMode.DELETE_AND_SEND)
+    await dialog_manager.done()
     key = StorageKey(bot_id=c.bot.id, chat_id=c.from_user.id, user_id=c.from_user.id)
     state = FSMContext(storage=storage, key=key)
-    await c.message.answer(text='Если пост с картинкой или видео, добавляем медиа, а текст пишем, как подпись\n'
-                                'Предлагайте или жмите отмена',
-                           reply_markup=cancel_kb())
+    await c.message.answer(
+        text='Если пост с картинкой или видео, добавляем медиа (до 10 файлов), а текст пишем, как подпись\n\n'
+             'Добавляйте или жмите отмена\n\nОжидаю вашего действия', reply_markup=cancel_kb())
     await state.set_state(Suggest.suggest_post)
 
 
@@ -86,7 +86,7 @@ async def suggest_work_cb(c: CallbackQuery, widget: Button, dialog_manager: Dial
     key = StorageKey(bot_id=c.bot.id, chat_id=c.from_user.id, user_id=c.from_user.id)
     state = FSMContext(storage=storage, key=key)
     keyboard = cancel_kb()
-    keyboard.inline_keyboard.append([InlineKeyboardButton(text="Начинаем", callback_data="start")])
-    await c.message.answer('Что бы информация попала в колонку РАБОТА, необходимо вносить, отвечая на вопросы',
+    # keyboard.inline_keyboard.append([InlineKeyboardButton(text="Начинаем", callback_data="start")])
+    await c.message.answer('Подача объявлений в этот раздел сейчас недоступна\nЖмите кнопку отмена',
                            reply_markup=keyboard)
     await state.set_state(Suggest.suggest_work)

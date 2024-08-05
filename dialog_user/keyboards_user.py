@@ -23,11 +23,11 @@ main_kb.add(InlineKeyboardButton(
 
 public = InlineKeyboardBuilder()
 public.add(InlineKeyboardButton(
-    text='Изменить пост🛠️',
+    text='Редактировать🛠️',
     callback_data='again')
 )
 public.add(InlineKeyboardButton(
-    text='Опубликовать пост🚀',
+    text='Опубликовать🚀',
     callback_data='public')
 )
 
