@@ -86,16 +86,17 @@ async def suggest_post(m: Message, state: FSMContext, album: list[Message] = Non
             media = list()
             data = await state.get_data()
             if obj.content_type == ContentType.PHOTO:
-                media = InputMediaPhoto(media=obj.photo[-1].file_id)
+                media = InputMediaPhoto(media=obj.photo[-1].file_id, parse_mode='MarkdownV2')
             if obj.content_type == ContentType.VIDEO:
-                media = InputMediaVideo(media=obj.video.file_id)
+                media = InputMediaVideo(media=obj.video.file_id, parse_mode='MarkdownV2')
             data['media'] = data.get('media', []) + [media]
             await state.update_data(data)
         data = await state.get_data()
         if len(data.get('media')) > 1:
             caption = data.get('caption')
-            mg = {'media': data['media'], 'caption': caption if caption else ' '}
-            media_group = MediaGroupBuilder(media=data['media'], caption=caption if caption else ' ')
+            author_line = f"{caption if caption else ' '}\n\nАвтор: [{m.from_user.full_name}](tg://user?id={m.from_user.id})"
+            mg = {'media': data['media'], 'caption': author_line,}
+            media_group = MediaGroupBuilder(media=data['media'], caption=author_line)
             await state.update_data({'type': 'mg', 'data': mg})
             await m.answer(display_post)
             await m.answer_media_group(media_group.build())

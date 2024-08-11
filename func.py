@@ -171,7 +171,6 @@ async def post_to_telegram(post: PreModData):
         'attachments': post.attachments_info,
         'source': post.url,
     }
-
     async with engine.scoped_session() as session:
         await write_data(session=session, table=Posts, data=data_to_post)
         await delete_data(session=session, table=PreModData, column=PreModData.internal_id, data_id=post.internal_id)
