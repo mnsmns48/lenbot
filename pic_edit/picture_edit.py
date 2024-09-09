@@ -9,7 +9,7 @@ def create_weather():
     e_font = ImageFont.truetype(font=f"{root_path}/pic_edit/RFDewi-Black.ttf", size=110)
     f_font = ImageFont.truetype(font=f"{root_path}/pic_edit/RFDewi-Regular.ttf", size=110)
     pogoda = Image.open(f"{root_path}/pic_edit/1.jpg")
-    pogoda_ = pogoda.crop((0, 256, 588, 767))
+    pogoda_ = pogoda.crop((30, 270, 600, 650))
     resized = pogoda_.resize((1500, 1200))
     ex = Image.open(f"{root_path}/pic_edit/ex.jpg")
     ex.paste(resized, (25, 475))
