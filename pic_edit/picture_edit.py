@@ -10,9 +10,9 @@ def create_weather():
     f_font = ImageFont.truetype(font=f"{root_path}/pic_edit/RFDewi-Regular.ttf", size=110)
     pogoda = Image.open(f"{root_path}/pic_edit/1.jpg")
     pogoda_ = pogoda.crop((30, 270, 600, 650))
-    resized = pogoda_.resize((1500, 1200))
+    resized = pogoda_.resize((1500, 1000))
     ex = Image.open(f"{root_path}/pic_edit/ex.jpg")
-    ex.paste(resized, (25, 475))
+    ex.paste(resized, (25, 575))
     drawer = ImageDraw.Draw(ex)
     weekdays = {
         0: 'Пн',
