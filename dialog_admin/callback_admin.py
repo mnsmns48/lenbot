@@ -7,12 +7,13 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram_dialog import DialogManager, StartMode, ShowMode
 from aiogram_dialog.widgets.input import MessageInput
 from aiogram_dialog.widgets.kbd import Button
+from sqlalchemy import delete
 
 from bot import bot
 from config import root_path, hv, engine, _img
 from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin, LoadImage
 from func import post_to_telegram
-from crud import write_data, delete_data
+from crud import write_data, delete_data, select_data
 from models import PreModData, BadPosts
 from pic_edit.picture_edit import create_weather
 
@@ -141,3 +142,12 @@ async def upload_pic(m: Message, message_input: MessageInput, dialog_manager: Di
     await m.answer('Загружено\nID на сервере Telegram:')
     await m.answer(id_photo)
     await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK)
+
+
+async def del_all_posts(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
+    async with engine.scoped_session() as session:
+        data = await select_data(session=session, table=PreModData)
+        await write_data(session=session, table=BadPosts, data=data)
+        await session.execute(delete(PreModData))
+        await session.commit()
+    await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)

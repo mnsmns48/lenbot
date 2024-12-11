@@ -12,7 +12,7 @@ from aiogram_dialog.widgets.text import Const, Format, Multi
 from dialog_admin.callback_admin import select_post, start_list, posts_manager_click, \
     yandex_weather_click, callback_weather_handler, send_weather_click, choose_marketing, \
     send_dobrotsen, send_lenino_work, weather_cancel, get_guests_click, start_main_menu, on_delete, on_go_post, \
-    delete_btn_3min, load_image, upload_pic
+    delete_btn_3min, load_image, upload_pic, del_all_posts
 from dialog_admin.getter_admin import posts_list_getter, post_info_getter, send_weather_photo, \
     get_guests_getter
 from dialog_admin.state_admin import PreModerateStates, AdminMainMenu, MarketingState, ListenAdmin, LoadImage
@@ -87,6 +87,9 @@ def pre_moderate_posts_list(**kwargs):
         Button(Const("Обновить посты"),
                id="refresh_posts_btn",
                on_click=start_list),
+        Button(Const("Очистить все посты"),
+               id="del_all_btn",
+               on_click=del_all_posts),
         Button(Const(" << -- Выход -- >>"),
                id="exit_btn",
                on_click=start_main_menu),
