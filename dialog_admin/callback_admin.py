@@ -147,7 +147,11 @@ async def upload_pic(m: Message, message_input: MessageInput, dialog_manager: Di
 async def del_all_posts(c: CallbackQuery, widget: Button, dialog_manager: DialogManager):
     async with engine.scoped_session() as session:
         data = await select_data(session=session, table=PreModData)
-        await write_data(session=session, table=BadPosts, data=data)
-        await session.execute(delete(PreModData))
-        await session.commit()
+        if data:
+            await write_data(session=session, table=BadPosts, data=data)
+            await session.execute(delete(PreModData))
+            await session.commit()
+            await c.answer('Очистил')
+        else:
+            await c.answer('Список пуст')
     await dialog_manager.start(AdminMainMenu.start, mode=StartMode.RESET_STACK, show_mode=ShowMode.DELETE_AND_SEND)
