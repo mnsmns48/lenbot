@@ -2,8 +2,6 @@ import asyncio
 import json
 import os
 import re
-import time
-import urllib.request
 from itertools import groupby
 from operator import itemgetter
 import random
@@ -70,6 +68,7 @@ async def download_video(video: str, format_quality: list) -> str | None:
     name = random.randint(1, 100000)
     ydl_opts = {'outtmpl': f'attachments/{name}.mp4',
                 'ffmpeg-location': '/usr/bin/ffmpeg',
+                # 'ffmpeg-location': '/ffmpeg/ffmpeg',
                 'ignore-errors': True,
                 }
     try:
@@ -120,7 +119,7 @@ async def post_to_telegram(post: PreModData):
                         await asyncio.sleep(0.5)
                 if key == 'video':
                     for video in attachments.get(key):
-                        video_title = await download_video(video=video, format_quality=[426, 480, 640, 360, 720, 852])
+                        video_title = await download_video(video=video, format_quality=[480, 640, 360, 720])
                         if video_title:
                             if os.path.getsize(f"{root_path}/{video_title}") < 52400000:
                                 media_group.add_video(
