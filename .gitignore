@@ -1,3 +1,4 @@
 /venv/
 /.env
 /pictures.env
+/ffmpeg/
